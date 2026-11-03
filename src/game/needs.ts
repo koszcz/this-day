@@ -1,15 +1,18 @@
 // Hunger, thirst, energy, warmth and health: how they drain and what happens when they run out.
 import { tileAt } from '../world/query';
 import { say, type GameState } from './state';
-import { FIRE_WARM_RADIUS, SHELTER_RADIUS, litFireNear, nearest } from './structures';
+import { FIRE_WARM_RADIUS, isSheltered, litFireNear } from './structures';
 import { ambientWarmth } from './time';
+
+// How many warmth points a lean-to adds to what your body drifts toward.
+const SHELTER_WARMTH = 32;
 
 const clamp = (v: number) => Math.max(0, Math.min(100, v));
 
 // The warmth the player's body is drifting toward right now.
 export function targetWarmth(state: GameState): number {
   let target = ambientWarmth(state.time);
-  if (nearest(state, 'shelter', SHELTER_RADIUS)) target += 22;
+  if (isSheltered(state)) target += SHELTER_WARMTH;
   if (litFireNear(state, FIRE_WARM_RADIUS)) target = Math.max(target, 88);
   if (tileAt(state.world, state.player.x, state.player.y) === 'shallow') target -= 25;
   return clamp(target);
@@ -21,7 +24,7 @@ export function tickNeeds(state: GameState, minutes: number) {
   s.hunger = clamp(s.hunger - 0.04 * minutes * rest);
   s.thirst = clamp(s.thirst - (0.07 + (state.sick > 0 ? 0.04 : 0)) * minutes * rest);
   if (state.sleeping) {
-    const sheltered = nearest(state, 'shelter', SHELTER_RADIUS) ? 1.4 : 1;
+    const sheltered = isSheltered(state) ? 1.4 : 1;
     s.energy = clamp(s.energy + 0.18 * sheltered * minutes);
   } else {
     s.energy = clamp(s.energy - 0.03 * minutes);

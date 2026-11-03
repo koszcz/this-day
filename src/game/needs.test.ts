@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { advance } from './step';
-import { addStructure } from './structures';
+import { addStructure, isSheltered } from './structures';
 import { freshGame } from './test-helpers';
 import { MINUTES_PER_DAY } from './time';
 
@@ -59,4 +59,20 @@ test('freezing wakes a sleeper', () => {
   g.sleeping = true;
   advance(g, 300);
   expect(g.sleeping).toBe(false);
+});
+
+test('a lean-to keeps you warmer at night, and the game says when you are sheltered', () => {
+  const open = freshGame();
+  open.time = 22 * 60;
+  open.stats.warmth = 60;
+  advance(open, 240);
+
+  const covered = freshGame();
+  covered.time = 22 * 60;
+  covered.stats.warmth = 60;
+  expect(isSheltered(covered)).toBe(false);
+  addStructure(covered, 'shelter');
+  expect(isSheltered(covered)).toBe(true);
+  advance(covered, 240);
+  expect(covered.stats.warmth).toBeGreaterThan(open.stats.warmth + 10);
 });

@@ -1,6 +1,7 @@
 // The five need bars, the clock and the log.
 import { clockText, dayNumber, daylight } from '../game/time';
 import type { GameState } from '../game/state';
+import { isSheltered } from '../game/structures';
 
 const BARS = [
   { key: 'health', icon: '❤️', color: '#d9534f' },
@@ -25,7 +26,8 @@ export function initStats(root: HTMLElement) {
 export function updateClock(el: HTMLElement, state: GameState) {
   const sky = daylight(state.time) > 0.1 ? '☀️' : '🌙';
   const sick = state.sick > 0 ? ' · 🤢 sick' : '';
-  el.textContent = `${sky} Day ${dayNumber(state.time)} · ${clockText(state.time)}${sick}`;
+  const shelter = isSheltered(state) ? ' · ⛺ sheltered' : '';
+  el.textContent = `${sky} Day ${dayNumber(state.time)} · ${clockText(state.time)}${shelter}${sick}`;
 }
 
 export function updateLog(el: HTMLElement, state: GameState) {

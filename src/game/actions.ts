@@ -16,6 +16,8 @@ export interface Action {
   icon: string;
   minutes: number;
   energy: number;
+  // Why the action cannot be used right now. The button shows this and does nothing.
+  blocked?: string;
   run: (state: GameState) => void;
 }
 
@@ -104,9 +106,10 @@ function contextActions(state: GameState): Action[] {
 function fireActions(state: GameState): Action[] {
   const out: Action[] = [];
   const fire = nearest(state, 'fire', 1.8);
-  if (fire && count(state.inventory, 'wood') > 0) {
+  if (fire) {
     out.push({
-      id: 'fuel', label: 'Feed fire', icon: '🔥', minutes: 4, energy: 0,
+      id: 'fuel', label: fire.fuel > 0 ? 'Feed fire' : 'Relight fire', icon: '🔥', minutes: 4, energy: 0,
+      blocked: count(state.inventory, 'wood') > 0 ? undefined : 'needs wood',
       run: (g) => {
         const f = nearest(g, 'fire', 1.8);
         if (!f || !removeItem(g.inventory, 'wood')) return;
@@ -192,7 +195,7 @@ function findAction(state: GameState, id: string): Action | undefined {
 export function startAction(state: GameState, id: string): boolean {
   if (state.busy || state.sleeping || state.dead) return false;
   const action = findAction(state, id);
-  if (!action) return false;
+  if (!action || action.blocked) return false;
   if (action.minutes <= 0) action.run(state);
   else state.busy = { id: action.id, label: action.label, total: action.minutes, remaining: action.minutes, energy: action.energy };
   return true;

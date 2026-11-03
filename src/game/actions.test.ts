@@ -106,3 +106,22 @@ test('skills level up with use and speed work', () => {
   g.skills.labor = 200;
   expect(availableActions(g).find((a) => a.id === 'chop')!.minutes).toBeLessThan(base);
 });
+
+test('an out fire can be relit with wood', () => {
+  const g = freshGame();
+  const fire = addStructure(g, 'fire', 0);
+  give(g, 'wood', 2);
+  expect(ids(g)).toContain('fuel');
+  expect(startAction(g, 'fuel')).toBe(true);
+  advance(g, 10);
+  expect(fire.fuel).toBeGreaterThan(100);
+  expect(count(g.inventory, 'wood')).toBe(1);
+});
+
+test('next to a fire with no wood, the feed action is shown but blocked, with a reason', () => {
+  const g = freshGame();
+  addStructure(g, 'fire', 0);
+  const feed = availableActions(g).find((a) => a.id === 'fuel');
+  expect(feed?.blocked).toBe('needs wood');
+  expect(startAction(g, 'fuel')).toBe(false);
+});

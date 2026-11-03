@@ -1,33 +1,19 @@
-// Turns the tile grid into blocky low-poly land and a see-through water sheet.
+// Draws the land as one smooth mesh with blended colors, plus a see-through water sheet.
 import * as THREE from 'three';
 import { LEVEL_HEIGHT, WATER_LEVEL, type World } from '../world/types';
-import { levelAt } from '../world/query';
-import { TILE_COLORS } from './palette';
-
-const hash = (x: number, y: number) => {
-  const h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
-  return h - Math.floor(h);
-};
+import { terrainMesh } from './terrain-mesh';
 
 export function buildTerrain(world: World): THREE.Group {
   const group = new THREE.Group();
-  const n = world.size * world.size;
-  const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshLambertMaterial(), n);
-  mesh.receiveShadow = true;
-  const m = new THREE.Matrix4();
-  const color = new THREE.Color();
-  for (let y = 0; y < world.size; y++) {
-    for (let x = 0; x < world.size; x++) {
-      const i = y * world.size + x;
-      const top = Math.max(levelAt(world, x, y), 0) * LEVEL_HEIGHT;
-      m.compose(new THREE.Vector3(x + 0.5, (top - 1) / 2, y + 0.5), new THREE.Quaternion(), new THREE.Vector3(1, top + 1, 1));
-      mesh.setMatrixAt(i, m);
-      color.set(TILE_COLORS[world.kind[i]]);
-      color.offsetHSL(0, 0, (hash(x, y) - 0.5) * 0.06);
-      mesh.setColorAt(i, color);
-    }
-  }
-  group.add(mesh);
+  const { positions, colors, indices } = terrainMesh(world);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  geo.setIndex(new THREE.BufferAttribute(indices, 1));
+  geo.computeVertexNormals();
+  const land = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true }));
+  land.receiveShadow = true;
+  group.add(land);
   const water = new THREE.Mesh(
     new THREE.PlaneGeometry(world.size * 3, world.size * 3),
     new THREE.MeshLambertMaterial({ color: '#3a84b8', transparent: true, opacity: 0.6 }),

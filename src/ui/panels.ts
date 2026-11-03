@@ -37,7 +37,7 @@ export function updateSkills(el: HTMLElement, state: GameState) {
 export function updateActions(el: HTMLElement, state: GameState) {
   const locked = state.busy || state.sleeping;
   const html = availableActions(state)
-    .map((a, i) => `<button data-action="${a.id}" ${locked ? 'disabled' : ''}><kbd>${i + 1}</kbd>${a.icon} ${a.label}${a.minutes ? `<small>${a.minutes}m</small>` : ''}</button>`)
+    .map((a, i) => `<button data-action="${a.id}" ${locked || a.blocked ? 'disabled' : ''}><kbd>${i + 1}</kbd>${a.icon} ${a.label}${a.blocked ? `<small>${a.blocked}</small>` : a.minutes ? `<small>${a.minutes}m</small>` : ''}</button>`)
     .join('');
   setHtml(el, html);
 }

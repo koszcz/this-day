@@ -26,6 +26,8 @@ export function nearest(state: GameState, kind: Structure['kind'], reach: number
   return best;
 }
 
+export const isSheltered = (state: GameState) => nearest(state, 'shelter', SHELTER_RADIUS) !== undefined;
+
 export const litFireNear = (state: GameState, reach: number) => {
   const fire = nearest(state, 'fire', reach);
   return fire !== undefined && fire.fuel > 0 ? fire : undefined;
