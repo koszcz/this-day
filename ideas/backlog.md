@@ -10,7 +10,9 @@ Empty.
 
 At most 3 ideas, in the order we build them.
 
-Empty.
+- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M*
+- **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S*
+- **Tool wear**: the axe breaks after 20 uses and the spear after 12, and you craft a new one. *Fun 2 · Effort S*
 
 ## Inbox
 
@@ -22,13 +24,21 @@ Empty.
 
 Triaged, but with open questions. Run `/refine` on one to settle them.
 
-- **More realistic mechanics**: the survival mechanics behave more like the real world. *Fun 2 · Effort L · Open: which mechanics (needs, crafting, weather, injury, carrying weight), and how hard should survival get? Split into S or M ideas when refining.*
+Empty.
 
 ## Later
 
 Triaged and ready to build, but not next.
 
-Empty.
+- **Carry weight**: the pack has a weight limit, and a heavy load slows your walk and drains energy faster. *Fun 2 · Effort S*
+- **Food spoils**: raw fish and berries rot after 6 game hours in your pack, and cooked fish lasts 24. Eating rotten food makes you sick. *Fun 2 · Effort M*
+- **Fire-making**: a campfire needs tinder and kindling, and lighting it can fail. Rain puts out a fire with no lean-to beside it. *Fun 2 · Effort M · Needs: Rain and wet*
+- **Plant fibre**: bushes give plant fibre, and a new Cordage recipe makes it into rope. *Fun 1 · Effort S*
+- **Wounds**: slips on rock and spear fishing can cause bleeding that drains health, or a sprain that slows your walk. Rest or a plant-fibre bandage treats them. *Fun 2 · Effort M · Needs: Plant fibre*
+- **Infection**: a wound left untreated for 3 game hours turns into infection and sickness, and a clean bandage clears it. *Fun 2 · Effort S · Needs: Wounds*
+- **Crafting steps**: the axe and spear need a stone head, a handle and cordage, made one step at a time. *Fun 2 · Effort M · Needs: Plant fibre*
+- **Roaming animals**: low-poly deer and hares wander the island and flee when you come near. *Fun 2 · Effort M*
+- **Hunt with a spear**: speared animals drop meat, which is a new food that must be cooked at a fire. *Fun 2 · Effort S · Needs: Roaming animals*
 
 ## Done
 
