@@ -1,0 +1,76 @@
+// The whole game state in one plain object, plus how a new game starts.
+import { generateWorld } from '../world/generate';
+import type { Prop, World } from '../world/types';
+import type { Inventory } from './items';
+import { newSkills, type Skills } from './skills';
+import { START_MINUTE } from './time';
+
+export interface Stats {
+  health: number;
+  hunger: number;
+  thirst: number;
+  energy: number;
+  warmth: number;
+}
+
+export interface Structure {
+  id: number;
+  kind: 'fire' | 'shelter';
+  x: number;
+  y: number;
+  // Minutes of burning left. Only fires use it.
+  fuel: number;
+}
+
+export interface BusyAction {
+  id: string;
+  label: string;
+  total: number;
+  remaining: number;
+  energy: number;
+}
+
+export interface GameState {
+  seed: number;
+  rng: number;
+  time: number;
+  world: World;
+  props: Prop[];
+  structures: Structure[];
+  player: { x: number; y: number };
+  stats: Stats;
+  inventory: Inventory;
+  skills: Skills;
+  busy: BusyAction | null;
+  sleeping: boolean;
+  // Minutes of sickness left.
+  sick: number;
+  log: string[];
+  dead: string | null;
+}
+
+export function newGame(seed: number): GameState {
+  const { world, props } = generateWorld(seed);
+  return {
+    seed,
+    rng: seed ^ 0x9e3779b9,
+    time: START_MINUTE,
+    world,
+    props,
+    structures: [],
+    player: { ...world.start },
+    stats: { health: 100, hunger: 70, thirst: 60, energy: 75, warmth: 60 },
+    inventory: {},
+    skills: newSkills(),
+    busy: null,
+    sleeping: false,
+    sick: 0,
+    log: ['You wake up on cold ground. You do not know where you are.'],
+    dead: null,
+  };
+}
+
+export function say(state: GameState, text: string) {
+  state.log.push(text);
+  if (state.log.length > 40) state.log.shift();
+}

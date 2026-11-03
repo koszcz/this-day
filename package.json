@@ -1,0 +1,21 @@
+{
+  "name": "this-day",
+  "private": true,
+  "packageManager": "bun@1.4.4",
+  "type": "module",
+  "scripts": {
+    "dev": "bun dev.ts",
+    "build": "bun build ./index.html --outdir dist --minify",
+    "test": "bun test",
+    "check": "tsc --noEmit && bun scripts/check-size.ts && bun scripts/check-tests.ts",
+    "prepare": "git config core.hooksPath .githooks || true"
+  },
+  "dependencies": {
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "@types/three": "^0.187.0",
+    "typescript": "^7.0.2"
+  }
+}

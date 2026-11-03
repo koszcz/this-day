@@ -1,0 +1,51 @@
+// Moves the game clock forward: needs drain, fires burn, plants regrow and actions finish.
+import { say, type GameState } from './state';
+import { finishBusy } from './actions';
+import { tickNeeds } from './needs';
+import { burnFires } from './structures';
+
+const SUBSTEP = 5;
+
+function wakeReason(state: GameState): string | null {
+  const s = state.stats;
+  if (s.energy >= 100) return 'You wake up rested.';
+  if (s.warmth < 15) return 'The cold wakes you up.';
+  if (s.thirst < 5 || s.hunger < 5) return 'Your body wakes you. You need water or food.';
+  return null;
+}
+
+function stepOnce(state: GameState, minutes: number) {
+  state.time += minutes;
+  burnFires(state, minutes);
+  for (const p of state.props) {
+    if (p.regrowAt !== null && state.time >= p.regrowAt) {
+      p.amount = p.max;
+      p.regrowAt = null;
+    }
+  }
+  const busy = state.busy;
+  if (busy) {
+    const used = Math.min(minutes, busy.remaining);
+    state.stats.energy = Math.max(0, state.stats.energy - (busy.energy * used) / busy.total);
+    busy.remaining -= used;
+  }
+  tickNeeds(state, minutes);
+  if (state.busy && state.busy.remaining <= 0 && !state.dead) finishBusy(state);
+  if (state.sleeping) {
+    const reason = wakeReason(state);
+    if (reason) {
+      state.sleeping = false;
+      say(state, reason);
+    }
+  }
+}
+
+// Advances the game by some game minutes, in small slices so fast sleep stays accurate.
+export function advance(state: GameState, minutes: number) {
+  let left = minutes;
+  while (left > 0 && !state.dead) {
+    const slice = Math.min(SUBSTEP, left);
+    stepOnce(state, slice);
+    left -= slice;
+  }
+}
