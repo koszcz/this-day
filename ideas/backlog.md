@@ -9,10 +9,9 @@ Empty.
 ## Next
 
 At most 3 ideas, in the order we build them.
-
-- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M*
-- **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S*
-- **Tool wear**: the axe breaks after 20 uses and the spear after 12, and you craft a new one. *Fun 2 · Effort S*
+- **Hover highlights**: trees, bushes, stones, water, fires, lean-tos and your character glow and show a pointer cursor when the mouse is over them. On touch a tap shows the same glow as the HUD opens. *Fun 2 · Effort M*
+- **Click an object for its actions**: clicking an object opens a small HUD beside it with that object's actions, such as Chop tree, Pick berries, Drink, Fish, Cook fish or Add wood to the fire. Choosing an action walks you to the object first, then does it. Clicking yourself opens Sleep, Eat and Craft, and the bottom action bar goes. *Fun 3 · Effort M · Needs: Hover highlights*
+- **Mouse and touch only**: WASD, the number keys and `E` stop working, and you walk only by clicking or tapping the ground. The help line and the key badges on the buttons go. *Fun 2 · Effort S*
 
 ## Inbox
 
@@ -29,10 +28,9 @@ Empty.
 ## Later
 
 Triaged and ready to build, but not next.
-
-- **Hover highlights**: trees, bushes, stones, water, fires, lean-tos and your character glow and show a pointer cursor when the mouse is over them. On touch a tap shows the same glow as the HUD opens. *Fun 2 · Effort M*
-- **Click an object for its actions**: clicking an object opens a small HUD beside it with that object's actions, such as Chop tree, Pick berries, Drink, Fish, Cook fish or Add wood to the fire. Choosing an action walks you to the object first, then does it. Clicking yourself opens Sleep, Eat and Craft, and the bottom action bar goes. *Fun 3 · Effort M · Needs: Hover highlights*
-- **Mouse and touch only**: WASD, the number keys and `E` stop working, and you walk only by clicking or tapping the ground. The help line and the key badges on the buttons go. *Fun 2 · Effort S*
+- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M*
+- **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S*
+- **Tool wear**: the axe breaks after 20 uses and the spear after 12, and you craft a new one. *Fun 2 · Effort S*
 - **Carry weight**: the pack has a weight limit, and a heavy load slows your walk and drains energy faster. *Fun 2 · Effort S*
 - **Food spoils**: raw fish and berries rot after 6 game hours in your pack, and cooked fish lasts 24. Eating rotten food makes you sick. *Fun 2 · Effort M*
 - **Fire-making**: a campfire needs tinder and kindling, and lighting it can fail. Rain puts out a fire with no lean-to beside it. *Fun 2 · Effort M · Needs: Rain and wet*
