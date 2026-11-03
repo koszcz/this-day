@@ -40,6 +40,9 @@ Triaged and ready to build, but not next.
 - **Crafting steps**: the axe and spear need a stone head, a handle and cordage, made one step at a time. *Fun 2 · Effort M · Needs: Plant fibre*
 - **Roaming animals**: low-poly deer and hares wander the island and flee when you come near. *Fun 2 · Effort M*
 - **Hunt with a spear**: speared animals drop meat, which is a new food that must be cooked at a fire. *Fun 2 · Effort S · Needs: Roaming animals*
+- **Jointed survivor**: the survivor gets a head, torso, two arms and two legs, built from low-poly shapes in code. The legs and arms swing while walking, and the figure breathes slightly when idle. *Fun 2 · Effort M*
+- **Action animations**: each action has its own animation, driven by the current busy action: chopping, swinging a spear to fish, bending to pick berries, crouching to drink, tending a fire to cook, and eating. *Fun 2 · Effort M · Needs: Jointed survivor*
+- **Held tools**: the axe and spear appear in the survivor's hand when used or carried, and the survivor lies flat with arms and legs out to sleep. *Fun 1 · Effort S · Needs: Jointed survivor*
 
 ## Done
 
