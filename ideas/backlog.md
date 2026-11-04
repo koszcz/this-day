@@ -4,7 +4,7 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-- **Fix the clipped action menu**: the action menu stays inside the screen and is never cut off at the bottom. *Fun 1 · Effort S · Branch: worktree-agent-a3a50d21fc0756594*
+Nothing right now.
 
 ## Next
 
@@ -30,6 +30,7 @@ Empty.
 
 Newest first, with the date it was merged.
 
+- **Fix the clipped action menu**: the action menu stays inside the screen and is never cut off at the bottom. *Fun 1 · Effort S* — 2026-11-04
 - **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M* — 2026-11-04
 - **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S* — 2026-11-04
 - **Say how to eat, sleep and make**: the hint line says to click the survivor to eat, sleep and make. *Fun 2 · Effort S* — 2026-11-04
