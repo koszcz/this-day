@@ -45,6 +45,14 @@ describe('sleep pose', () => {
     expect(p.rootTilt).toBeCloseTo(Math.PI / 2, 10);
     expect(p.rootY).toBe(0.2);
   });
+  test('arms and legs lie out, spread slightly to the sides', () => {
+    const p = sleepPose(0);
+    expect(p.armL.z).toBeGreaterThan(0.3);
+    expect(p.armR.z).toBeLessThan(-0.3);
+    expect(p.legL.z).toBeGreaterThan(0.1);
+    expect(p.legR.z).toBeLessThan(-0.1);
+    for (const j of [p.armL, p.armR, p.legL, p.legR]) expect(j.x).toBe(0);
+  });
 });
 
 describe('computePose', () => {

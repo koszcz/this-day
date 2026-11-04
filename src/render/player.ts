@@ -3,6 +3,8 @@
 import * as THREE from 'three';
 import { mat } from './palette';
 import { actionKind, actionPose } from './action-pose';
+import { heldTool, type Carried } from './held-tool';
+import { buildTool } from './tools';
 import { blendPose, computePose, JOINTS, type JointName, type Pose } from './pose';
 
 const SKIN = '#e8b98f';
@@ -66,6 +68,18 @@ export function buildPlayer() {
   hips.add(legL, legR);
 
   /** The pivot groups, by name. Hang tools on `armR`, or drive them directly. */
+  // Tools sit in the right hand, at the end of the arm. Only one shows at a time.
+  const tools = { axe: buildTool('axe'), spear: buildTool('spear') };
+  for (const t of Object.values(tools)) {
+    t.position.y = -0.42;
+    t.visible = false;
+    armR.add(t);
+  }
+  const showTool = (held: ReturnType<typeof heldTool>) => {
+    tools.axe.visible = held === 'axe';
+    tools.spear.visible = held === 'spear';
+  };
+
   const joints: Record<JointName, THREE.Group> = { torso, head, armL, armR, legL, legR };
 
   const applyPose = (pose: Pose) => {
@@ -82,7 +96,8 @@ export function buildPlayer() {
   let lastElapsed = 0;
   let lastKind: ReturnType<typeof actionKind> = null;
   const FADE_PER_SECOND = 6;
-  const update = (moving: boolean, sleeping: boolean, elapsed: number, busyId?: string | null) => {
+  const update = (moving: boolean, sleeping: boolean, elapsed: number, busyId?: string | null, carried?: Carried) => {
+    showTool(heldTool(carried ?? { axe: false, spear: false }, busyId, sleeping));
     const dt = Math.max(0, Math.min(0.25, elapsed - lastElapsed));
     lastElapsed = elapsed;
     const kind = moving || sleeping ? null : actionKind(busyId);

@@ -71,6 +71,11 @@ export function sleepPose(elapsed: number): Pose {
   p.rootTilt = Math.PI / 2;
   p.rootY = 0.2;
   p.torso.x = Math.sin(elapsed * BREATH_RATE) * 0.02;
+  // Limbs lie straight and a little apart, like a person stretched out.
+  p.armL.z = 0.45;
+  p.armR.z = -0.45;
+  p.legL.z = 0.18;
+  p.legR.z = -0.18;
   return p;
 }
 

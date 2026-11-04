@@ -1,6 +1,7 @@
 // Starts the game: builds the scene, runs the loop, and connects clicks, taps and the HUD.
 import * as THREE from 'three';
 import { startAction } from './game/actions';
+import { count } from './game/items';
 import { moveBy, WALK_SPEED } from './game/movement';
 import { clearSave, loadGame, saveGame } from './game/save';
 import { newGame, say, type GameState } from './game/state';
@@ -181,7 +182,10 @@ function frame() {
   view.lastX = state.player.x;
   view.lastY = state.player.y;
   p.position.set(state.player.x, view.y, state.player.y);
-  view.player.update(moving, state.sleeping, elapsed, state.busy?.id);
+  view.player.update(moving, state.sleeping, elapsed, state.busy?.id, {
+    axe: count(state.inventory, 'axe') > 0,
+    spear: count(state.inventory, 'spear') > 0,
+  });
   view.props.update();
   view.structures.update(state.structures, elapsed);
   view.animals.update(state.animals, elapsed);
