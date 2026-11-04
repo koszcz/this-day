@@ -10,24 +10,9 @@ Nothing right now.
 
 At most 3 ideas, in the order we build them.
 
-Empty.
-
-## Inbox
-
-New ideas go here, not scored yet.
-
-From the 2026-11-04 playtests (see `docs/playtests/`).
-
-- **Unstick the survivor**: the survivor freezes when wedged against a bush, tree or rock, and clicks do nothing with no message. Add a way out or a message.
-- **Point to water**: three of four testers died of thirst or found no water in 17 game hours. Give the player a cue to find water.
-- **Fire in rain**: lighting a fire in rain fails and silently burns the tinder and kindling. Warn on the card or refuse before spending goods.
-- **Idle with no message**: picking berries from a bush in dense forest left the survivor idle about 40 game minutes. Say why, or fix the reach.
-- **Say how to eat, sleep and make**: these only appear after you click the survivor, and the hint never says so.
-- **Find the survivor**: she hides behind trees, and a rock behind her steals clicks.
-- **Explain disabled MAKE cards**: a disabled card should say what is missing.
-- **Stone head takes campfire stones**: it silently uses stones the campfire needs. Warn or reserve them.
-- **Show walking to a far target**: nothing shows while the survivor walks a long way.
-- **Fix the clipped action menu**: the menu is cut off at the bottom.
+- **Unstick the survivor**: when the survivor is wedged against a bush, tree or rock, a message says so and she steps to the nearest free spot. *Fun 3 · Effort M*
+- **Fire in rain**: lighting a fire in rain is refused with a message before any tinder or kindling is spent. *Fun 2 · Effort S*
+- **Explain disabled MAKE cards**: a disabled MAKE card says what is missing. *Fun 2 · Effort S*
 
 ## Needs thought
 
@@ -38,6 +23,14 @@ Empty.
 ## Later
 
 Triaged and ready to build, but not next.
+
+- **Say how to eat, sleep and make**: the hint line says to click the survivor to eat, sleep and make. *Fun 2 · Effort S*
+- **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M*
+- **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S*
+- **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M*
+- **Stone head takes campfire stones**: making a stone head warns when it would use stones a campfire needs. *Fun 1 · Effort S*
+- **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S*
+- **Fix the clipped action menu**: the action menu stays inside the screen and is never cut off at the bottom. *Fun 1 · Effort S*
 
 ## Done
 
