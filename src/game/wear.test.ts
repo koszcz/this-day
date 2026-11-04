@@ -67,8 +67,9 @@ test('the spear breaks after 12 tries', () => {
 test('a new axe is crafted at full strength after the old one broke', () => {
   const g = freshGame();
   g.toolUses.axe = 0;
-  give(g, 'wood', 2);
-  give(g, 'stone', 2);
+  give(g, 'stoneHead');
+  give(g, 'handle');
+  give(g, 'rope');
   startAction(g, 'craft:axe');
   advance(g, 60);
   expect(usesLeft(g, 'axe')).toBe(20);
