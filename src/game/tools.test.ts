@@ -18,6 +18,30 @@ test('a stone head takes 2 stone, and a handle takes 1 wood', () => {
   expect([count(g.inventory, 'stoneHead'), count(g.inventory, 'handle')]).toEqual([1, 1]);
 });
 
+test('making a stone head warns when it leaves too few stones for a campfire', () => {
+  const g = freshGame();
+  give(g, 'stone', 3);
+  expect(startAction(g, 'craft:stoneHead')).toBe(true);
+  expect(g.log.at(-1)).toBe('This stone is for a campfire, which needs 2 stone. You will have 1 left.');
+});
+
+test('making a stone head does not warn when 2 stones stay for the campfire', () => {
+  const g = freshGame();
+  give(g, 'stone', 4);
+  const before = g.log.length;
+  expect(startAction(g, 'craft:stoneHead')).toBe(true);
+  expect(g.log.length).toBe(before);
+});
+
+test('making a stone head does not warn once a fire stands', () => {
+  const g = freshGame();
+  give(g, 'stone', 2);
+  g.structures.push({ id: 1, kind: 'fire', x: 0, y: 0, fuel: 0 });
+  const before = g.log.length;
+  expect(startAction(g, 'craft:stoneHead')).toBe(true);
+  expect(g.log.length).toBe(before);
+});
+
 test('raw stone and wood no longer make an axe or a spear', () => {
   const g = freshGame();
   give(g, 'wood', 4);

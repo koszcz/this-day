@@ -26,6 +26,8 @@ export interface Action {
   blocked?: string;
   // Clicking the action says this and does nothing: no time and no items are spent.
   refuse?: string;
+  // Said when the action starts. The action still goes ahead.
+  warn?: string;
   run: (state: GameState) => void;
 }
 
@@ -282,8 +284,20 @@ export function craftBlock(state: GameState, r: Recipe): string | undefined {
   return missing.length > 0 ? `needs ${missing.join(', ')}` : undefined;
 }
 
-function craftAction(r: Recipe): Action {
+// A stone head eats stones that you still need for a campfire, while you have no fire yet.
+export function stoneWarning(state: GameState, r: Recipe): string | undefined {
+  const campfire = RECIPES.find((c) => c.id === 'campfire');
+  const stone = r.cost.stone ?? 0;
+  if (!campfire || stone === 0 || r.id === campfire.id) return undefined;
+  if (state.structures.some((s) => s.kind === 'fire')) return undefined;
+  const need = campfire.cost.stone ?? 0;
+  const left = count(state.inventory, 'stone') - stone;
+  return left < need ? `This stone is for a campfire, which needs ${need} stone. You will have ${Math.max(0, left)} left.` : undefined;
+}
+
+function craftAction(r: Recipe, state: GameState): Action {
   return {
+    warn: stoneWarning(state, r),
     id: `craft:${r.id}`, label: `Make ${r.name.toLowerCase()}`, icon: r.icon, minutes: r.minutes, energy: 3,
     run: (g) => {
       for (const [id, n] of Object.entries(r.cost)) removeItem(g.inventory, id as ItemId, n);
@@ -320,7 +334,7 @@ export function availableActions(state: GameState): Action[] {
 }
 
 export function craftableActions(state: GameState): { recipe: Recipe; action: Action; enabled: boolean; blocked?: string }[] {
-  return RECIPES.map((recipe) => ({ recipe, action: craftAction(recipe), enabled: canCraft(state, recipe), blocked: craftBlock(state, recipe) }));
+  return RECIPES.map((recipe) => ({ recipe, action: craftAction(recipe, state), enabled: canCraft(state, recipe), blocked: craftBlock(state, recipe) }));
 }
 
 function findAction(state: GameState, id: string): Action | undefined {
@@ -339,6 +353,7 @@ export function startAction(state: GameState, id: string): boolean {
     say(state, action.refuse);
     return false;
   }
+  if (action.warn) say(state, action.warn);
   if (action.minutes <= 0) action.run(state);
   else state.busy = { id: action.id, label: action.label, total: action.minutes, remaining: action.minutes, energy: action.energy };
   return true;
