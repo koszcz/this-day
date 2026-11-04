@@ -4,13 +4,12 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-Nothing right now.
+- **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M · Branch: worktree-agent-af0816cd50f8786c6*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M*
 - **Say how to eat, sleep and make**: the hint line says to click the survivor to eat, sleep and make. *Fun 2 · Effort S*
 - **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S*
 
