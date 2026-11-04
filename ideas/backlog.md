@@ -4,13 +4,12 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-Nothing right now.
+- **Unstick the survivor**: when the survivor is wedged against a bush, tree or rock, a message says so and she steps to the nearest free spot. *Fun 3 · Effort M · Branch: worktree-agent-a15defba253b1ada1*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Unstick the survivor**: when the survivor is wedged against a bush, tree or rock, a message says so and she steps to the nearest free spot. *Fun 3 · Effort M*
 - **Fire in rain**: lighting a fire in rain is refused with a message before any tinder or kindling is spent. *Fun 2 · Effort S*
 - **Explain disabled MAKE cards**: a disabled MAKE card says what is missing. *Fun 2 · Effort S*
 
