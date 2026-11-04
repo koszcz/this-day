@@ -118,3 +118,28 @@ test('a lean-to too far away does not protect the fire', () => {
   advance(g, 5);
   expect(fire.fuel).toBe(0);
 });
+
+test('lighting in the open in rain is refused with a message and spends nothing', () => {
+  const g = freshGame();
+  addStructure(g, 'fire', 0);
+  give(g, 'tinder');
+  give(g, 'kindling');
+  g.weather = { raining: true, changeAt: g.time + 100000 };
+  const before = g.time;
+  expect(startAction(g, 'light')).toBe(false);
+  expect(g.busy).toBeNull();
+  expect(g.time).toBe(before);
+  expect(count(g.inventory, 'tinder')).toBe(1);
+  expect(count(g.inventory, 'kindling')).toBe(1);
+  expect(g.log).toContain('The rain is too heavy to light a fire out in the open.');
+});
+
+test('a lean-to beside the fire lets you try to light it in the rain', () => {
+  const g = freshGame();
+  addStructure(g, 'fire', 0);
+  addStructure(g, 'shelter').x += 1.5;
+  give(g, 'tinder');
+  give(g, 'kindling');
+  g.weather = { raining: true, changeAt: g.time + 100000 };
+  expect(startAction(g, 'light')).toBe(true);
+});

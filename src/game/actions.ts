@@ -3,7 +3,7 @@ import { hypot } from '../math/exact';
 import { waterNear } from '../world/query';
 import type { Prop, PropKind } from '../world/types';
 import { huntActions } from './hunting';
-import { hasLightingKit, tryLight } from './fire';
+import { hasLightingKit, rainRefusal, tryLight } from './fire';
 import { ITEMS, addItem, count, removeItem, type ItemId } from './items';
 import { roll } from './random';
 import { RECIPES, type Recipe } from './recipes';
@@ -24,6 +24,8 @@ export interface Action {
   energy: number;
   // Why the action cannot be used right now. The button shows this and does nothing.
   blocked?: string;
+  // Clicking the action says this and does nothing: no time and no items are spent.
+  refuse?: string;
   run: (state: GameState) => void;
 }
 
@@ -187,6 +189,7 @@ function fireActions(state: GameState): Action[] {
       out.push({
         id: 'light', label: 'Light fire', icon: '🔥', minutes: 10, energy: 1,
         blocked: hasLightingKit(state) ? undefined : 'needs tinder and kindling',
+        refuse: rainRefusal(state, fire),
         run: (g) => {
           const f = nearest(g, 'fire', 1.8);
           if (f && f.fuel <= 0) tryLight(g, f);
@@ -315,10 +318,17 @@ function findAction(state: GameState, id: string): Action | undefined {
   return craft?.action ?? availableActions(state).find((a) => a.id === id);
 }
 
+// True when the action exists and says why it will not start, so the caller need not add a message.
+export const isRefused = (state: GameState, id: string) => !!findAction(state, id)?.refuse;
+
 export function startAction(state: GameState, id: string): boolean {
   if (state.busy || state.sleeping || state.dead) return false;
   const action = findAction(state, id);
   if (!action || action.blocked) return false;
+  if (action.refuse) {
+    say(state, action.refuse);
+    return false;
+  }
   if (action.minutes <= 0) action.run(state);
   else state.busy = { id: action.id, label: action.label, total: action.minutes, remaining: action.minutes, energy: action.energy };
   return true;

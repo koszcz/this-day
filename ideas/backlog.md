@@ -4,7 +4,6 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-- **Fire in rain**: lighting a fire in rain is refused with a message before any tinder or kindling is spent. *Fun 2 · Effort S · Branch: worktree-agent-a5f4c200f5aedc984*
 
 ## Next
 
@@ -34,6 +33,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Fire in rain**: lighting a fire in rain is refused with a message before any tinder or kindling is spent. *Fun 2 · Effort S* — 2026-11-04
 - **Unstick the survivor**: when the survivor is wedged against a bush, tree or rock, a message says so and she steps to the nearest free spot. *Fun 3 · Effort M* — 2026-11-04
 - **Held tools**: the axe and spear appear in the survivor's hand when used or carried, and the survivor lies flat with arms and legs out to sleep. *Fun 1 · Effort S* — 2026-11-04
 - **Action animations**: each action has its own animation, driven by the current busy action: chopping, swinging a spear to fish, bending to pick berries, crouching to drink, tending a fire to cook, and eating. *Fun 2 · Effort M* — 2026-11-04

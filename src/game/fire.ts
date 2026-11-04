@@ -19,6 +19,10 @@ export function lightChance(state: GameState): number {
   return Math.min(0.95, base + skillLevel(state.skills.crafting) * 0.03);
 }
 
+// Lighting in the rain is refused when no lean-to covers the fire, because the rain would put it out.
+export const rainRefusal = (state: GameState, fire: Structure) =>
+  state.weather.raining && !covered(state, fire) ? 'The rain is too heavy to light a fire out in the open.' : undefined;
+
 // One attempt: it always uses up the tinder and kindling. Returns whether the fire caught.
 export function tryLight(state: GameState, fire: Structure): boolean {
   if (!hasLightingKit(state)) return false;
@@ -33,7 +37,7 @@ export function tryLight(state: GameState, fire: Structure): boolean {
   return false;
 }
 
-const covered = (state: GameState, fire: Structure) =>
+export const covered = (state: GameState, fire: Structure) =>
   state.structures.some((s) => s.kind === 'shelter' && hypot(s.x - fire.x, s.y - fire.y) <= SHELTER_RADIUS);
 
 // While it rains, a lit fire with no lean-to beside it goes out.

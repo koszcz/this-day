@@ -1,6 +1,6 @@
 // Runs the player's orders: walk to a point, do an errand on an object, and move the clock on.
 import { hypot } from '../math/exact';
-import { startAction } from './actions';
+import { isRefused, startAction } from './actions';
 import { errandStep, type Errand } from './interact';
 import { moveBy, WALK_SPEED } from './movement';
 import { say, type GameState } from './state';
@@ -26,7 +26,10 @@ export function tick(state: GameState, driver: Driver, seconds: number) {
     const step = errandStep(state, driver.errand);
     if (step.kind === 'walk') driver.target = step;
     else {
-      if (step.kind === 'arrive' && !startAction(state, driver.errand.action)) say(state, 'You cannot do that right now.');
+      if (step.kind === 'arrive') {
+        const refused = isRefused(state, driver.errand.action);
+        if (!startAction(state, driver.errand.action) && !refused) say(state, 'You cannot do that right now.');
+      }
       driver.errand = null;
       driver.target = null;
     }
