@@ -4,6 +4,7 @@ import { say, type GameState } from './state';
 import { FIRE_WARM_RADIUS, isSheltered, litFireNear } from './structures';
 import { ambientWarmth } from './time';
 import { drainFactor } from './weight';
+import { crossedThirstHint, pointToWater } from './water-hint';
 import { WET_CHILL } from './weather';
 import { BLEED_DRAIN, isBleeding, tickWound } from './wounds';
 
@@ -26,7 +27,9 @@ export function tickNeeds(state: GameState, minutes: number) {
   const s = state.stats;
   const rest = state.sleeping ? 0.5 : 1;
   s.hunger = clamp(s.hunger - 0.04 * minutes * rest);
+  const thirstBefore = s.thirst;
   s.thirst = clamp(s.thirst - (0.07 + (state.sick > 0 ? 0.04 : 0)) * minutes * rest);
+  if (crossedThirstHint(thirstBefore, s.thirst)) pointToWater(state);
   if (state.sleeping) {
     const sheltered = isSheltered(state) ? 1.4 : 1;
     s.energy = clamp(s.energy + 0.18 * sheltered * minutes);

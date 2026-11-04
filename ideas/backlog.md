@@ -4,7 +4,7 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-- **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M · Branch: worktree-agent-af0816cd50f8786c6*
+Nothing right now.
 
 ## Next
 
@@ -33,6 +33,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M* — 2026-11-04
 - **Explain disabled MAKE cards**: a disabled MAKE card says what is missing, such as "needs 2 wood", in the Make panel and in the survivor's menu. *Fun 2 · Effort S* — 2026-11-04
 - **Fire in rain**: lighting a fire in rain is refused with a message before any tinder or kindling is spent. *Fun 2 · Effort S* — 2026-11-04
 - **Unstick the survivor**: when the survivor is wedged against a bush, tree or rock, a message says so and she steps to the nearest free spot. *Fun 3 · Effort M* — 2026-11-04
