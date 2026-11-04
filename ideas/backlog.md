@@ -4,14 +4,13 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-Nothing right now.
+- **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S · Branch: worktree-agent-ad43d75eddc802881*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S*
-
+Empty.
 
 ## Needs thought
 
