@@ -1,5 +1,6 @@
 // Saves the game to the browser so a refresh does not wipe your progress.
 import type { GameState } from './state';
+import { ensureFood } from './spoilage';
 import { ensureWear } from './wear';
 import { ensureWeather } from './weather';
 
@@ -20,6 +21,7 @@ export function loadGame(): GameState | null {
     if (state) {
       ensureWeather(state);
       ensureWear(state);
+      ensureFood(state);
     }
     return state && !state.dead ? state : null;
   } catch {

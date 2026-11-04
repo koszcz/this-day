@@ -10,6 +10,7 @@ import { gainXp, SKILL_NAMES, skillLevel, speedFactor, type SkillId } from './sk
 import { say, type GameState } from './state';
 import { FIRE_MAX_FUEL, addStructure, litFireNear, nearest } from './structures';
 import { MINUTES_PER_DAY } from './time';
+import { rottenCount, takeUnit } from './spoilage';
 import { canCarry } from './weight';
 import { freshTool, isTool, wearTool } from './wear';
 
@@ -186,10 +187,13 @@ function fireActions(state: GameState): Action[] {
     }
   }
   if (litFireNear(state, 1.8) && count(state.inventory, 'rawFish') > 0) {
+    const allRotten = rottenCount(state, 'rawFish') === count(state.inventory, 'rawFish');
     out.push({
       id: 'cook', label: 'Cook fish', icon: '🍖', minutes: 8, energy: 0,
+      blocked: allRotten ? 'fish has rotted' : undefined,
       run: (g) => {
-        if (removeItem(g.inventory, 'rawFish')) addItem(g.inventory, 'cookedFish');
+        if (takeUnit(g, 'rawFish', 'oldestFresh') === null) return;
+        addItem(g.inventory, 'cookedFish');
         say(g, 'The fish sizzles.');
       },
     });
@@ -211,17 +215,31 @@ function eatActions(state: GameState): Action[] {
   for (const id of Object.keys(ITEMS) as ItemId[]) {
     const food = ITEMS[id].food;
     if (!food || count(state.inventory, id) === 0) continue;
+    const rotten = rottenCount(state, id);
+    const allRotten = rotten === count(state.inventory, id);
     out.push({
-      id: `eat:${id}`, label: `Eat ${ITEMS[id].name.toLowerCase()}`, icon: ITEMS[id].icon, minutes: 2, energy: 0,
+      id: `eat:${id}`, label: `Eat ${allRotten ? 'rotten ' : ''}${ITEMS[id].name.toLowerCase()}`, icon: ITEMS[id].icon, minutes: 2, energy: 0,
       run: (g) => {
-        if (!removeItem(g.inventory, id)) return;
+        const wasRotten = takeUnit(g, id, 'freshest');
+        if (wasRotten === null) return;
         g.stats.hunger = Math.min(100, g.stats.hunger + food.hunger);
-        if (roll(g) < food.sickChance) {
+        if (wasRotten) {
+          g.sick = 360;
+          say(g, `The ${ITEMS[id].name.toLowerCase()} is rotten. Your stomach turns. You feel sick.`);
+        } else if (roll(g) < food.sickChance) {
           g.sick = 360;
           say(g, 'Your stomach turns. You feel sick.');
         } else say(g, `You eat the ${ITEMS[id].name.toLowerCase()}.`);
       },
     });
+    if (rotten > 0) {
+      out.push({
+        id: `discard:${id}`, label: `Throw away rotten ${ITEMS[id].name.toLowerCase()}`, icon: '🗑️', minutes: 1, energy: 0,
+        run: (g) => {
+          if (takeUnit(g, id, 'rotten') !== null) say(g, `You throw away the rotten ${ITEMS[id].name.toLowerCase()}.`);
+        },
+      });
+    }
   }
   return out;
 }

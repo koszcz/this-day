@@ -3,6 +3,7 @@ import { craftableActions } from '../game/actions';
 import { ITEMS, type ItemId } from '../game/items';
 import { SKILL_NAMES, skillLevel, type SkillId } from '../game/skills';
 import type { GameState } from '../game/state';
+import { freshCount, hoursUntilRot, rottenCount } from '../game/spoilage';
 import { isTool, usesLeft } from '../game/wear';
 import { MAX_LOAD, carryLoad, encumbrance } from '../game/weight';
 
@@ -12,11 +13,22 @@ function setHtml(el: HTMLElement, html: string) {
   el.innerHTML = html;
 }
 
+// How fresh the food is: how many are rotten, and when the next one goes off.
+function freshness(state: GameState, id: ItemId): string {
+  const hours = hoursUntilRot(state, id);
+  const rotten = rottenCount(state, id);
+  if (hours === null && rotten === 0) return '';
+  const parts = [];
+  if (rotten > 0) parts.push(freshCount(state, id) > 0 ? `${rotten} rotten` : 'rotten');
+  if (hours !== null) parts.push(`rots in ${hours}h`);
+  return ` <small>(${parts.join(', ')})</small>`;
+}
+
 export function updatePack(el: HTMLElement, state: GameState) {
   const rows = (Object.keys(ITEMS) as ItemId[])
     .filter((id) => (state.inventory[id] ?? 0) > 0)
     .map((id) => {
-      const left = isTool(id) ? ` <small>(${usesLeft(state, id)} uses left)</small>` : '';
+      const left = isTool(id) ? ` <small>(${usesLeft(state, id)} uses left)</small>` : freshness(state, id);
       return `<div class="row">${ITEMS[id].icon} ${ITEMS[id].name}${left}<b>${state.inventory[id]}</b></div>`;
     });
   const load = carryLoad(state.inventory);

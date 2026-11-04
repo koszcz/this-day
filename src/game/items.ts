@@ -8,14 +8,16 @@ export interface ItemDef {
   weight: number;
   // Present on food: how much hunger it restores and the chance it makes you sick.
   food?: { hunger: number; sickChance: number };
+  // Game minutes after you get it before it rots. Absent when it never rots.
+  spoilsAfter?: number;
 }
 
 export const ITEMS: Record<ItemId, ItemDef> = {
   wood: { name: 'Wood', icon: '🪵', weight: 3 },
   stone: { name: 'Stone', icon: '🪨', weight: 4 },
-  berries: { name: 'Berries', icon: '🫐', weight: 1, food: { hunger: 8, sickChance: 0.03 } },
-  rawFish: { name: 'Raw fish', icon: '🐟', weight: 2, food: { hunger: 22, sickChance: 0.3 } },
-  cookedFish: { name: 'Cooked fish', icon: '🍖', weight: 2, food: { hunger: 40, sickChance: 0 } },
+  berries: { name: 'Berries', icon: '🫐', weight: 1, food: { hunger: 8, sickChance: 0.03 }, spoilsAfter: 360 },
+  rawFish: { name: 'Raw fish', icon: '🐟', weight: 2, food: { hunger: 22, sickChance: 0.3 }, spoilsAfter: 360 },
+  cookedFish: { name: 'Cooked fish', icon: '🍖', weight: 2, food: { hunger: 40, sickChance: 0 }, spoilsAfter: 1440 },
   axe: { name: 'Stone axe', icon: '🪓', weight: 4 },
   spear: { name: 'Spear', icon: '🔱', weight: 3 },
   tinder: { name: 'Tinder', icon: '🌾', weight: 0.5 },

@@ -4,6 +4,7 @@ import { finishBusy } from './actions';
 import { tickNeeds } from './needs';
 import { rainOnFires } from './fire';
 import { burnFires } from './structures';
+import { syncFood, tickSpoilage } from './spoilage';
 import { drainFactor } from './weight';
 import { stepWeather, tickWet } from './weather';
 
@@ -18,6 +19,7 @@ function wakeReason(state: GameState): string | null {
 }
 
 function stepOnce(state: GameState, minutes: number) {
+  syncFood(state);
   state.time += minutes;
   burnFires(state, minutes);
   stepWeather(state);
@@ -37,6 +39,7 @@ function stepOnce(state: GameState, minutes: number) {
   }
   tickNeeds(state, minutes);
   if (state.busy && state.busy.remaining <= 0 && !state.dead) finishBusy(state);
+  tickSpoilage(state, minutes);
   if (state.sleeping) {
     const reason = wakeReason(state);
     if (reason) {

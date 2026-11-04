@@ -1,7 +1,7 @@
 // The whole game state in one plain object, plus how a new game starts.
 import { generateWorld } from '../world/generate';
 import type { Prop, World } from '../world/types';
-import type { Inventory } from './items';
+import type { Inventory, ItemId } from './items';
 import { newSkills, type Skills } from './skills';
 import { START_MINUTE } from './time';
 import { newWeather, type Weather } from './weather';
@@ -42,6 +42,8 @@ export interface GameState {
   stats: Stats;
   inventory: Inventory;
   skills: Skills;
+  // When you got each unit of perishable food, oldest first. Drives rotting.
+  born: Partial<Record<ItemId, number[]>>;
   // Uses left on the axe and spear you carry.
   toolUses: Partial<Record<'axe' | 'spear', number>>;
   busy: BusyAction | null;
@@ -68,6 +70,7 @@ export function newGame(seed: number): GameState {
     stats: { health: 100, hunger: 70, thirst: 60, energy: 75, warmth: 60 },
     inventory: {},
     skills: newSkills(),
+    born: {},
     toolUses: {},
     busy: null,
     sleeping: false,
