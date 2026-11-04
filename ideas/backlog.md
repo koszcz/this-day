@@ -9,7 +9,6 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-- **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S*
 - **Tool wear**: the axe breaks after 20 uses and the spear after 12, and you craft a new one. *Fun 2 · Effort S*
 
 ## Inbox
@@ -44,6 +43,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S* — 2026-11-04
 - **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M* — 2026-11-04
 
 - **Mouse and touch only**: WASD, the arrow keys, the number keys, `E` and Escape no longer do anything. You walk only by clicking or tapping the ground, and the help line shows no keys. *Fun 2 · Effort S* — 2026-11-04

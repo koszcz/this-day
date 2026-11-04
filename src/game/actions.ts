@@ -22,6 +22,8 @@ export interface Action {
 }
 
 const REACH = 1.5;
+// Raw sea and pond water makes you sick this often. Boiling it first is safe.
+export const DIRTY_WATER_SICK_CHANCE = 0.4;
 
 function nearProp(state: GameState, kind: PropKind): Prop | undefined {
   let best: Prop | undefined;
@@ -62,7 +64,10 @@ function contextActions(state: GameState): Action[] {
       id: 'drink', label: 'Drink', icon: '💧', minutes: 5, energy: 0,
       run: (g) => {
         g.stats.thirst = Math.min(100, g.stats.thirst + 35);
-        say(g, 'The water is cold and clear.');
+        if (roll(g) < DIRTY_WATER_SICK_CHANCE) {
+          g.sick = 360;
+          say(g, 'The water tastes foul. Your stomach turns. You feel sick.');
+        } else say(g, 'The water is cold. It tastes of salt and mud.');
       },
     });
     if (count(state.inventory, 'spear') > 0) {
@@ -124,6 +129,15 @@ function fireActions(state: GameState): Action[] {
       run: (g) => {
         if (removeItem(g.inventory, 'rawFish')) addItem(g.inventory, 'cookedFish');
         say(g, 'The fish sizzles.');
+      },
+    });
+  }
+  if (litFireNear(state, 1.8)) {
+    out.push({
+      id: 'boil', label: 'Boil and drink', icon: '♨️', minutes: 12, energy: 0,
+      run: (g) => {
+        g.stats.thirst = Math.min(100, g.stats.thirst + 35);
+        say(g, 'You boil water over the fire and drink it. It is safe.');
       },
     });
   }

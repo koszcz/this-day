@@ -83,6 +83,37 @@ test('cooking needs a lit fire and turns raw fish into cooked fish', () => {
   expect(count(g.inventory, 'rawFish')).toBe(0);
 });
 
+test('raw water makes you sick about 40% of the time', () => {
+  let sick = 0;
+  const trials = 400;
+  for (let seed = 1; seed <= trials; seed++) {
+    const g = freshGame(seed);
+    g.player.x = 0.5;
+    g.player.y = 0.5;
+    startAction(g, 'drink');
+    advance(g, 5);
+    if (g.sick > 0) sick++;
+  }
+  expect(sick / trials).toBeGreaterThan(0.32);
+  expect(sick / trials).toBeLessThan(0.48);
+});
+
+test('boiling needs a lit fire, and the water is always safe', () => {
+  const g = freshGame();
+  const fire = addStructure(g, 'fire', 0);
+  expect(ids(g)).not.toContain('boil');
+  fire.fuel = 100;
+  expect(ids(g)).toContain('boil');
+  for (let i = 0; i < 50; i++) {
+    g.stats.thirst = 10;
+    fire.fuel = 100;
+    expect(startAction(g, 'boil')).toBe(true);
+    advance(g, 15);
+    expect(g.stats.thirst).toBeGreaterThan(40);
+    expect(g.sick).toBe(0);
+  }
+});
+
 test('eating restores hunger', () => {
   const g = freshGame();
   give(g, 'cookedFish');

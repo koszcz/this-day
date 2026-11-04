@@ -55,7 +55,8 @@ function fireMenu(state: GameState, id: number): MenuEntry[] {
   const here = actionsAt(state, fire.x, fire.y);
   const blocked = fire.fuel <= 0 ? 'the fire is out' : 'needs raw fish';
   const cook = here.find((a) => a.id === 'cook') ?? { id: 'cook', label: 'Cook fish', icon: '🍖', minutes: 0, blocked };
-  return [here.find((a) => a.id === 'fuel')!, cook];
+  const boil = here.find((a) => a.id === 'boil') ?? { id: 'boil', label: 'Boil and drink', icon: '♨️', minutes: 0, blocked: 'the fire is out' };
+  return [here.find((a) => a.id === 'fuel')!, cook, boil];
 }
 
 function playerMenu(state: GameState): MenuEntry[] {
