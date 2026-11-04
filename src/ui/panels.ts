@@ -39,9 +39,9 @@ export function updatePack(el: HTMLElement, state: GameState) {
 
 export function updateCraft(el: HTMLElement, state: GameState) {
   const html = craftableActions(state)
-    .map(({ recipe, action, enabled }) => {
+    .map(({ recipe, action, enabled, blocked }) => {
       const cost = Object.entries(recipe.cost).map(([id, n]) => `${n}${ITEMS[id as ItemId].icon}`).join(' ');
-      return `<button data-action="${action.id}" ${enabled && !state.busy && !state.sleeping ? '' : 'disabled'} title="${recipe.blurb}">${recipe.icon} ${recipe.name}<small>${cost} · ${recipe.minutes}m</small></button>`;
+      return `<button data-action="${action.id}" ${enabled && !state.busy && !state.sleeping ? '' : 'disabled'} title="${blocked ?? recipe.blurb}">${recipe.icon} ${recipe.name}<small>${blocked ?? `${cost} · ${recipe.minutes}m`}</small></button>`;
     })
     .join('');
   setHtml(el, html);

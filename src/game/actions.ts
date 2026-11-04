@@ -272,6 +272,16 @@ export function canCraft(state: GameState, r: Recipe): boolean {
   return Object.entries(r.cost).every(([id, n]) => count(state.inventory, id as ItemId) >= n);
 }
 
+// Why a recipe cannot be made right now, in a few words. Undefined when you can make it.
+export function craftBlock(state: GameState, r: Recipe): string | undefined {
+  if ('item' in r.makes && isTool(r.makes.item) && count(state.inventory, r.makes.item) > 0) return 'you have one';
+  const missing = Object.entries(r.cost)
+    .map(([id, n]) => ({ id: id as ItemId, short: n - count(state.inventory, id as ItemId) }))
+    .filter((m) => m.short > 0)
+    .map((m) => `${m.short} ${ITEMS[m.id].name.toLowerCase()}`);
+  return missing.length > 0 ? `needs ${missing.join(', ')}` : undefined;
+}
+
 function craftAction(r: Recipe): Action {
   return {
     id: `craft:${r.id}`, label: `Make ${r.name.toLowerCase()}`, icon: r.icon, minutes: r.minutes, energy: 3,
@@ -309,8 +319,8 @@ export function availableActions(state: GameState): Action[] {
   return acts;
 }
 
-export function craftableActions(state: GameState): { recipe: Recipe; action: Action; enabled: boolean }[] {
-  return RECIPES.map((recipe) => ({ recipe, action: craftAction(recipe), enabled: canCraft(state, recipe) }));
+export function craftableActions(state: GameState): { recipe: Recipe; action: Action; enabled: boolean; blocked?: string }[] {
+  return RECIPES.map((recipe) => ({ recipe, action: craftAction(recipe), enabled: canCraft(state, recipe), blocked: craftBlock(state, recipe) }));
 }
 
 function findAction(state: GameState, id: string): Action | undefined {

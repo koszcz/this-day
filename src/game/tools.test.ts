@@ -48,3 +48,17 @@ test('a spear needs a stone head, a handle and a rope', () => {
   advance(g, 10);
   expect(count(g.inventory, 'spear')).toBe(1);
 });
+
+test('a blocked recipe says what is missing, or that you have the tool', () => {
+  const g = freshGame();
+  give(g, 'wood');
+  expect(entry(g, 'handle').blocked).toBeUndefined();
+  expect(entry(g, 'shelter').blocked).toBe('needs 7 wood');
+  expect(entry(g, 'axe').blocked).toBe('needs 1 stone head, 1 handle, 1 rope');
+  give(g, 'axe');
+  give(g, 'stoneHead');
+  give(g, 'handle');
+  give(g, 'rope');
+  expect(entry(g, 'axe').blocked).toBe('you have one');
+  expect(entry(g, 'spear').blocked).toBeUndefined();
+});

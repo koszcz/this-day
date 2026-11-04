@@ -57,7 +57,7 @@ test('cordage turns 3 fibre into 1 rope, and you can make several', () => {
 test('the player menu shows Make cordage, blocked until you have fibre', () => {
   const g = freshGame();
   const entry = () => menuFor(g, { kind: 'player' }).find((e) => e.id === 'craft:cordage')!;
-  expect(entry().blocked).toBe('needs materials');
+  expect(entry().blocked).toBe('needs 3 plant fibre');
   give(g, 'fibre', 3);
   expect(entry().blocked).toBeUndefined();
 });

@@ -4,9 +4,7 @@ import { waterNear } from '../world/query';
 import { availableActions, craftableActions } from './actions';
 import type { HoverTarget } from './hover';
 import { HUNT_RANGE, huntActions, huntId } from './hunting';
-import { count } from './items';
 import type { GameState } from './state';
-import { isTool } from './wear';
 
 export interface MenuEntry {
   id: string;
@@ -74,10 +72,7 @@ function animalMenu(state: GameState, id: number): MenuEntry[] {
 function playerMenu(state: GameState): MenuEntry[] {
   const here = availableActions(state).map(entryOf);
   const sleep = here.find((a) => a.id === 'sleep') ?? { id: 'sleep', label: 'Sleep', icon: '😴', minutes: 0, blocked: 'not tired' };
-  const crafts = craftableActions(state).map(({ recipe, action, enabled }) => ({
-    ...entryOf(action),
-    blocked: enabled ? undefined : 'item' in recipe.makes && isTool(recipe.makes.item) && count(state.inventory, recipe.makes.item) > 0 ? 'you have one' : 'needs materials',
-  }));
+  const crafts = craftableActions(state).map(({ action, blocked }) => ({ ...entryOf(action), blocked }));
   return [...here.filter((a) => a.id.startsWith('eat:') || a.id === 'bandage'), sleep, ...crafts];
 }
 

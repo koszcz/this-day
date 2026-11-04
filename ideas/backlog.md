@@ -4,7 +4,7 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-- **Explain disabled MAKE cards**: a disabled MAKE card says what is missing. *Fun 2 · Effort S · Branch: worktree-agent-a1c44aed60cec0276*
+Nothing right now.
 
 ## Next
 
@@ -35,6 +35,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Explain disabled MAKE cards**: a disabled MAKE card says what is missing, such as "needs 2 wood", in the Make panel and in the survivor's menu. *Fun 2 · Effort S* — 2026-11-04
 - **Fire in rain**: lighting a fire in rain is refused with a message before any tinder or kindling is spent. *Fun 2 · Effort S* — 2026-11-04
 - **Unstick the survivor**: when the survivor is wedged against a bush, tree or rock, a message says so and she steps to the nearest free spot. *Fun 3 · Effort M* — 2026-11-04
 - **Held tools**: the axe and spear appear in the survivor's hand when used or carried, and the survivor lies flat with arms and legs out to sleep. *Fun 1 · Effort S* — 2026-11-04
