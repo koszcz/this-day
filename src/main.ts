@@ -2,11 +2,10 @@
 import * as THREE from 'three';
 import { startAction } from './game/actions';
 import { count } from './game/items';
-import { moveBy, WALK_SPEED } from './game/movement';
+import { newDriver, tick } from './game/drive';
+import { createPlaytest } from './playtest/api';
 import { clearSave, loadGame, saveGame } from './game/save';
 import { newGame, say, type GameState } from './game/state';
-import { advance } from './game/step';
-import { GAME_MINUTES_PER_SECOND, SLEEP_SPEEDUP } from './game/time';
 import { pickObject, pickWater, sameTarget, type HoverTarget } from './game/hover';
 import { createHighlight } from './render/highlight';
 import { groundPoint } from './input/pointer';
@@ -20,7 +19,7 @@ import { buildStructures } from './render/structures';
 import { buildTerrain } from './render/terrain';
 import { surfaceHeight } from './world/query';
 import { LAYOUT } from './ui/layout';
-import { errandStep, menuFor, type Errand, type MenuEntry } from './game/interact';
+import { menuFor, type MenuEntry } from './game/interact';
 import { hideMenu, showMenu } from './ui/menu';
 import { showDeath, showIntro } from './ui/overlay';
 import { updateBusy, updateCraft, updatePack, updateSkills } from './ui/panels';
@@ -39,11 +38,15 @@ let gloom = 0;
 const updateBars =initStats($('stats'));
 const clock = new THREE.Clock();
 
-let state: GameState = loadGame() ?? newGame((Math.random() * 1e9) | 0);
+// ?seed=N starts a new game on that island. ?slot=name keeps a save of its own, apart from other tabs.
+const params = new URLSearchParams(location.search);
+const slot = params.get('slot') ?? '';
+const seedParam = params.get('seed');
+let state: GameState = (seedParam ? null : loadGame(slot)) ?? newGame(seedParam ? Number(seedParam) : (Math.random() * 1e9) | 0);
 let started = false;
-let target: { x: number; y: number } | null = null;
-// The action you picked on an object, while you walk to it. And the menu that is open now.
-let errand: Errand | null = null;
+let paused = false;
+// What you told the survivor to do: walk to a point, or an action on an object. And the menu that is open now.
+const driver = newDriver();
 let menu: { target: HoverTarget; entries: MenuEntry[] } | null = null;
 let view: ReturnType<typeof mountWorld>;
 
@@ -63,14 +66,14 @@ function mountWorld(g: GameState) {
   return { root, props, structures, animals, player, highlight, lastX: g.player.x, lastY: g.player.y, y: player.root.position.y };
 }
 
-function restart() {
+function restart(seed?: number) {
   stage.scene.remove(view.root);
-  clearSave();
-  state = newGame((Math.random() * 1e9) | 0);
+  clearSave(slot);
+  state = newGame(seed ?? (Math.random() * 1e9) | 0);
   view = mountWorld(state);
   $('overlay').style.display = 'none';
-  target = null;
-  errand = null;
+  driver.target = null;
+  driver.errand = null;
   closeMenu();
   hovered = null;
   shown = null;
@@ -91,8 +94,8 @@ hud.addEventListener('click', (e) => {
   const pick = el.closest<HTMLElement>('[data-pick]');
   const entry = pick && menu?.entries[Number(pick.dataset.pick)];
   if (entry && menu && !entry.blocked) {
-    errand = { target: menu.target, action: entry.id };
-    target = null;
+    driver.errand = { target: menu.target, action: entry.id };
+    driver.target = null;
     closeMenu();
   }
 });
@@ -100,17 +103,17 @@ hud.addEventListener('click', (e) => {
 canvas.addEventListener('click', (e) => {
   if (!started || state.dead) return;
   closeMenu();
-  errand = null;
+  driver.errand = null;
   if (state.busy || state.sleeping) return;
   const clicked = pickAt(e);
   const entries = clicked ? menuFor(state, clicked) : [];
   if (clicked && entries.length) {
     menu = { target: clicked, entries };
-    target = null;
+    driver.target = null;
     showMenu($('menu'), entries, e.clientX, e.clientY);
     return;
   }
-  target = groundPoint(e, stage.camera, canvas, view.y);
+  driver.target = groundPoint(e, stage.camera, canvas, view.y);
 });
 
 // Hover: objects are tall, so look for them at chest height first, then on the ground, then water.
@@ -144,33 +147,14 @@ function frame() {
   const dt = Math.min(clock.getDelta(), 0.1);
   const elapsed = clock.elapsedTime;
   if (started && !state.dead) {
-    const dir = { x: 0, y: 0 };
-    if (errand && !state.busy && !state.sleeping) {
-      const step = errandStep(state, errand);
-      if (step.kind === 'walk') target = step;
-      else {
-        if (step.kind === 'arrive' && !startAction(state, errand.action)) say(state, 'You cannot do that right now.');
-        errand = null;
-        target = null;
-      }
-    }
-    if (target) {
-      const dx = target.x - state.player.x;
-      const dy = target.y - state.player.y;
-      const d = Math.hypot(dx, dy);
-      if (d < 0.1) target = null;
-      else (dir.x = dx / d), (dir.y = dy / d);
-    }
-    if (state.busy || state.sleeping) target = null;
-    moveBy(state, dir.x * WALK_SPEED * dt, dir.y * WALK_SPEED * dt);
-    advance(state, dt * GAME_MINUTES_PER_SECOND * (state.sleeping ? SLEEP_SPEEDUP : 1));
+    if (!paused) tick(state, driver, dt);
     autosave += dt;
     if (autosave > 10) {
       autosave = 0;
-      saveGame(state);
+      saveGame(state, slot);
     }
     if (state.dead) {
-      clearSave();
+      clearSave(slot);
       showDeath($('overlay'), state, restart);
     }
   }
@@ -206,3 +190,11 @@ function frame() {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+// The commands a playtester calls from the console. See .claude/skills/playtest.
+(window as unknown as { playtest: unknown }).playtest = createPlaytest({
+  state: () => state,
+  driver: () => driver,
+  setPaused: (p) => (paused = p),
+  restart: (seed) => (restart(seed), (started = true)),
+});

@@ -16,7 +16,18 @@ Empty.
 
 New ideas go here, not scored yet.
 
-Empty.
+From the 2026-11-04 playtests (see `docs/playtests/`).
+
+- **Unstick the survivor**: the survivor freezes when wedged against a bush, tree or rock, and clicks do nothing with no message. Add a way out or a message.
+- **Point to water**: three of four testers died of thirst or found no water in 17 game hours. Give the player a cue to find water.
+- **Fire in rain**: lighting a fire in rain fails and silently burns the tinder and kindling. Warn on the card or refuse before spending goods.
+- **Idle with no message**: picking berries from a bush in dense forest left the survivor idle about 40 game minutes. Say why, or fix the reach.
+- **Say how to eat, sleep and make**: these only appear after you click the survivor, and the hint never says so.
+- **Find the survivor**: she hides behind trees, and a rock behind her steals clicks.
+- **Explain disabled MAKE cards**: a disabled card should say what is missing.
+- **Stone head takes campfire stones**: it silently uses stones the campfire needs. Warn or reserve them.
+- **Show walking to a far target**: nothing shows while the survivor walks a long way.
+- **Fix the clipped action menu**: the menu is cut off at the bottom.
 
 ## Needs thought
 
