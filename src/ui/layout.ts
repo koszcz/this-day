@@ -10,6 +10,6 @@ export const LAYOUT = `
   <div id="log"></div>
   <div id="busy"><div id="busy-bar"></div><span id="busy-label"></span></div>
   <div id="menu"></div>
-  <div id="help">click the ground to walk · click an object for its actions · wheel to zoom</div>
+  <div id="help">click the ground to walk · click an object for its actions · click the survivor to eat, sleep and make · wheel to zoom</div>
   <div id="overlay"></div>
 `;
