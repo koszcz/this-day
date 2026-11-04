@@ -3,7 +3,7 @@ import { availableActions, craftableActions, startAction } from './actions';
 import { count } from './items';
 import { advance } from './step';
 import { addStructure } from './structures';
-import { freshGame, give, putProp } from './test-helpers';
+import { freshGame, give, keepDry, putProp } from './test-helpers';
 
 const ids = (g: ReturnType<typeof freshGame>) => availableActions(g).map((a) => a.id);
 
@@ -100,6 +100,7 @@ test('raw water makes you sick about 40% of the time', () => {
 
 test('boiling needs a lit fire, and the water is always safe', () => {
   const g = freshGame();
+  keepDry(g);
   const fire = addStructure(g, 'fire', 0);
   expect(ids(g)).not.toContain('boil');
   fire.fuel = 100;
@@ -138,20 +139,21 @@ test('skills level up with use and speed work', () => {
   expect(availableActions(g).find((a) => a.id === 'chop')!.minutes).toBeLessThan(base);
 });
 
-test('an out fire can be relit with wood', () => {
+test('wood feeds a lit fire but cannot relight an out one', () => {
   const g = freshGame();
-  const fire = addStructure(g, 'fire', 0);
+  const fire = addStructure(g, 'fire', 100);
   give(g, 'wood', 2);
-  expect(ids(g)).toContain('fuel');
   expect(startAction(g, 'fuel')).toBe(true);
   advance(g, 10);
   expect(fire.fuel).toBeGreaterThan(100);
   expect(count(g.inventory, 'wood')).toBe(1);
+  fire.fuel = 0;
+  expect(ids(g)).not.toContain('fuel');
 });
 
-test('next to a fire with no wood, the feed action is shown but blocked, with a reason', () => {
+test('next to a lit fire with no wood, the feed action is shown but blocked, with a reason', () => {
   const g = freshGame();
-  addStructure(g, 'fire', 0);
+  addStructure(g, 'fire', 100);
   const feed = availableActions(g).find((a) => a.id === 'fuel');
   expect(feed?.blocked).toBe('needs wood');
   expect(startAction(g, 'fuel')).toBe(false);

@@ -22,7 +22,7 @@ test('a bush offers berries and a stone offers stone', () => {
   const g = freshGame();
   putProp(g, 'bush', 5, 0);
   putProp(g, 'stone', -5, 0);
-  expect(ids(g, { kind: 'prop', id: 0 })).toEqual(['forage']);
+  expect(ids(g, { kind: 'prop', id: 0 })).toEqual(['forage', 'tinder']);
   expect(ids(g, { kind: 'prop', id: 1 })).toEqual(['mine']);
 });
 
@@ -39,10 +39,13 @@ test('a fire offers to feed it, and cooking says why it is blocked', () => {
   const fire = addStructure(g, 'fire', 0);
   const target = { kind: 'structure', id: fire.id } as const;
   expect(menuFor(g, target).map((e) => [e.id, e.label, e.blocked])).toEqual([
-    ['fuel', 'Relight fire', 'needs wood'],
+    ['light', 'Light fire', 'needs tinder and kindling'],
     ['cook', 'Cook fish', 'the fire is out'],
     ['boil', 'Boil and drink', 'the fire is out'],
   ]);
+  give(g, 'tinder');
+  give(g, 'kindling');
+  expect(menuFor(g, target)[0].blocked).toBeUndefined();
   fire.fuel = 100;
   give(g, 'wood');
   expect(menuFor(g, target).map((e) => [e.id, e.blocked])).toEqual([['fuel', undefined], ['cook', 'needs raw fish'], ['boil', undefined]]);

@@ -26,7 +26,7 @@ export type ErrandStep = { kind: 'walk'; x: number; y: number } | { kind: 'arriv
 const PROP_REACH = 1.2;
 const FIRE_REACH = 1.3;
 
-const PROP_ACTION = { tree: 'chop', bush: 'forage', stone: 'mine' } as const;
+const PROP_ACTIONS: Record<string, string[]> = { tree: ['chop', 'kindling'], bush: ['forage', 'tinder'], stone: ['mine'] };
 
 const entryOf = (a: { id: string; label: string; icon: string; minutes: number; blocked?: string }): MenuEntry => ({
   id: a.id, label: a.label, icon: a.icon, minutes: a.minutes, blocked: a.blocked,
@@ -40,7 +40,7 @@ function actionsAt(state: GameState, x: number, y: number): MenuEntry[] {
 function propMenu(state: GameState, id: number): MenuEntry[] {
   const prop = state.props.find((p) => p.id === id);
   if (!prop || prop.amount <= 0) return [];
-  return actionsAt(state, prop.x, prop.y).filter((a) => a.id === PROP_ACTION[prop.kind]);
+  return actionsAt(state, prop.x, prop.y).filter((a) => PROP_ACTIONS[prop.kind].includes(a.id));
 }
 
 function waterMenu(state: GameState, x: number, y: number): MenuEntry[] {
@@ -56,7 +56,7 @@ function fireMenu(state: GameState, id: number): MenuEntry[] {
   const blocked = fire.fuel <= 0 ? 'the fire is out' : 'needs raw fish';
   const cook = here.find((a) => a.id === 'cook') ?? { id: 'cook', label: 'Cook fish', icon: '🍖', minutes: 0, blocked };
   const boil = here.find((a) => a.id === 'boil') ?? { id: 'boil', label: 'Boil and drink', icon: '♨️', minutes: 0, blocked: 'the fire is out' };
-  return [here.find((a) => a.id === 'fuel')!, cook, boil];
+  return [(here.find((a) => a.id === 'fuel') ?? here.find((a) => a.id === 'light'))!, cook, boil];
 }
 
 function playerMenu(state: GameState): MenuEntry[] {

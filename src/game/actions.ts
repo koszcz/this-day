@@ -2,6 +2,7 @@
 import { hypot } from '../math/exact';
 import { waterNear } from '../world/query';
 import type { Prop, PropKind } from '../world/types';
+import { hasLightingKit, tryLight } from './fire';
 import { ITEMS, addItem, count, removeItem, type ItemId } from './items';
 import { roll } from './random';
 import { RECIPES, type Recipe } from './recipes';
@@ -63,6 +64,16 @@ function gather(state: GameState, prop: Prop, item: ItemId, skill: SkillId, regr
   say(state, `You get ${1 + extra} ${ITEMS[item].name.toLowerCase()}.`);
 }
 
+// Loose material that does not use up the bush or tree.
+function gatherLoose(state: GameState, item: ItemId, text: string) {
+  if (!canCarry(state.inventory, item)) {
+    say(state, 'Your pack is too full.');
+    return;
+  }
+  addItem(state.inventory, item);
+  say(state, text);
+}
+
 const packFull = (state: GameState, item: ItemId) => (canCarry(state.inventory, item) ? undefined : 'pack is full');
 
 function contextActions(state: GameState): Action[] {
@@ -116,6 +127,20 @@ function contextActions(state: GameState): Action[] {
       },
     });
   }
+  if (bush) {
+    out.push({
+      id: 'tinder', label: 'Gather tinder', icon: '🌾', minutes: 6, energy: 1,
+      blocked: packFull(state, 'tinder'),
+      run: (g) => gatherLoose(g, 'tinder', 'You pull dry grass from under the bush.'),
+    });
+  }
+  if (tree) {
+    out.push({
+      id: 'kindling', label: 'Gather kindling', icon: '🥢', minutes: 8, energy: 1,
+      blocked: packFull(state, 'kindling'),
+      run: (g) => gatherLoose(g, 'kindling', 'You snap dry twigs from the tree.'),
+    });
+  }
   const stone = nearProp(state, 'stone');
   if (stone) {
     out.push({
@@ -131,16 +156,27 @@ function fireActions(state: GameState): Action[] {
   const out: Action[] = [];
   const fire = nearest(state, 'fire', 1.8);
   if (fire) {
-    out.push({
-      id: 'fuel', label: fire.fuel > 0 ? 'Feed fire' : 'Relight fire', icon: '🔥', minutes: 4, energy: 0,
-      blocked: count(state.inventory, 'wood') > 0 ? undefined : 'needs wood',
-      run: (g) => {
-        const f = nearest(g, 'fire', 1.8);
-        if (!f || !removeItem(g.inventory, 'wood')) return;
-        f.fuel = Math.min(FIRE_MAX_FUEL, f.fuel + 120);
-        say(g, 'The fire crackles.');
-      },
-    });
+    if (fire.fuel > 0) {
+      out.push({
+        id: 'fuel', label: 'Feed fire', icon: '🔥', minutes: 4, energy: 0,
+        blocked: count(state.inventory, 'wood') > 0 ? undefined : 'needs wood',
+        run: (g) => {
+          const f = nearest(g, 'fire', 1.8);
+          if (!f || !removeItem(g.inventory, 'wood')) return;
+          f.fuel = Math.min(FIRE_MAX_FUEL, f.fuel + 120);
+          say(g, 'The fire crackles.');
+        },
+      });
+    } else {
+      out.push({
+        id: 'light', label: 'Light fire', icon: '🔥', minutes: 10, energy: 1,
+        blocked: hasLightingKit(state) ? undefined : 'needs tinder and kindling',
+        run: (g) => {
+          const f = nearest(g, 'fire', 1.8);
+          if (f && f.fuel <= 0) tryLight(g, f);
+        },
+      });
+    }
   }
   if (litFireNear(state, 1.8) && count(state.inventory, 'rawFish') > 0) {
     out.push({
@@ -197,7 +233,7 @@ function craftAction(r: Recipe): Action {
         addItem(g.inventory, r.makes.item);
         if (isTool(r.makes.item)) freshTool(g, r.makes.item);
       }
-      else addStructure(g, r.makes.structure, r.makes.structure === 'fire' ? 240 : 0);
+      else addStructure(g, r.makes.structure);
       train(g, 'crafting', 5);
       say(g, `You make a ${r.name.toLowerCase()}.`);
     },

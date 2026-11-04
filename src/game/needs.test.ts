@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { advance } from './step';
 import { addStructure, isSheltered } from './structures';
-import { freshGame } from './test-helpers';
+import { freshGame, keepDry } from './test-helpers';
 import { MINUTES_PER_DAY } from './time';
 
 test('hunger and thirst fall as time passes', () => {
@@ -26,6 +26,7 @@ test('night is colder than day, and a fire fixes it', () => {
   expect(cold.stats.warmth).toBeLessThan(25);
 
   const warm = freshGame();
+  keepDry(warm);
   warm.time = 22 * 60;
   warm.stats.warmth = 60;
   addStructure(warm, 'fire', 400);

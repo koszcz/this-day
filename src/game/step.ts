@@ -2,6 +2,7 @@
 import { say, type GameState } from './state';
 import { finishBusy } from './actions';
 import { tickNeeds } from './needs';
+import { rainOnFires } from './fire';
 import { burnFires } from './structures';
 import { drainFactor } from './weight';
 import { stepWeather, tickWet } from './weather';
@@ -20,6 +21,7 @@ function stepOnce(state: GameState, minutes: number) {
   state.time += minutes;
   burnFires(state, minutes);
   stepWeather(state);
+  rainOnFires(state);
   tickWet(state, minutes);
   for (const p of state.props) {
     if (p.regrowAt !== null && state.time >= p.regrowAt) {
