@@ -6,6 +6,8 @@ import { clearSave, loadGame, saveGame } from './game/save';
 import { newGame, type GameState } from './game/state';
 import { advance } from './game/step';
 import { GAME_MINUTES_PER_SECOND, SLEEP_SPEEDUP } from './game/time';
+import { pickObject, pickWater, sameTarget, type HoverTarget } from './game/hover';
+import { createHighlight } from './render/highlight';
 import { listenKeys, walkDirection } from './input/keys';
 import { groundPoint } from './input/pointer';
 import { buildDaylight } from './render/daylight';
@@ -46,7 +48,8 @@ function mountWorld(g: GameState) {
   stage.scene.add(root);
   player.root.position.set(g.player.x, surfaceHeight(g.world, g.player.x, g.player.y), g.player.y);
   stage.focus.copy(player.root.position);
-  return { root, props, structures, player, lastX: g.player.x, lastY: g.player.y, y: player.root.position.y };
+  const highlight = createHighlight(root, { prop: props.find, structure: structures.find, player: player.root });
+  return { root, props, structures, player, highlight, lastX: g.player.x, lastY: g.player.y, y: player.root.position.y };
 }
 
 function restart() {
@@ -56,6 +59,8 @@ function restart() {
   view = mountWorld(state);
   $('overlay').style.display = 'none';
   target = null;
+  hovered = null;
+  shown = null;
 }
 
 view = mountWorld(state);
@@ -82,6 +87,32 @@ canvas.addEventListener('click', (e) => {
   if (!started || state.dead) return;
   target = groundPoint(e, stage.camera, canvas, view.y);
 });
+
+// Hover: objects are tall, so look for them at chest height first, then on the ground, then water.
+let hovered: HoverTarget | null = null;
+let shown: HoverTarget | null = null;
+function pickAt(e: PointerEvent): HoverTarget | null {
+  const high = groundPoint(e, stage.camera, canvas, view.y + 0.8);
+  const low = groundPoint(e, stage.camera, canvas, view.y);
+  return (high && pickObject(state, high.x, high.y)) || (low && (pickObject(state, low.x, low.y) ?? pickWater(state, low.x, low.y))) || null;
+}
+canvas.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'mouse' && started && !state.dead) hovered = pickAt(e);
+});
+canvas.addEventListener('pointerleave', (e) => {
+  if (e.pointerType === 'mouse') hovered = null;
+});
+// On touch there is no hover. A tap lights up what you touched until the next tap.
+canvas.addEventListener('pointerdown', (e) => {
+  if (e.pointerType === 'touch' && started && !state.dead) hovered = pickAt(e);
+});
+function updateHover() {
+  if (state.dead) hovered = null;
+  if (sameTarget(hovered, shown)) return;
+  shown = hovered;
+  view.highlight(shown);
+  canvas.style.cursor = shown ? 'pointer' : '';
+}
 
 let autosave = 0;
 function frame() {
@@ -120,7 +151,8 @@ function frame() {
   p.position.set(state.player.x, view.y, state.player.y);
   view.player.update(moving, state.sleeping, elapsed);
   view.props.update();
-  view.structures(state.structures, elapsed);
+  view.structures.update(state.structures, elapsed);
+  updateHover();
   stage.follow(p.position, dt);
   updateSky(state.time, stage.focus);
   stage.render();

@@ -4,7 +4,7 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-- **Hover highlights**: trees, bushes, stones, water, fires, lean-tos and your character glow and show a pointer cursor when the mouse is over them. On touch a tap shows the same glow as the HUD opens. *Fun 2 · Effort M · Branch: worktree-agent-a54c09909b8d3eef3*
+Nothing right now.
 
 ## Next
 
@@ -47,7 +47,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
-Empty.
+- **Hover highlights**: trees, bushes, stones, water, fires, lean-tos and your character glow and show a pointer cursor when the mouse is over them. On touch a tap shows the same glow as the HUD opens. *Fun 2 · Effort M* — 2026-11-04
 
 ## Dropped
 
