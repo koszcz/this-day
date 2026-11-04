@@ -26,7 +26,7 @@ export function initStats(root: HTMLElement) {
 export function updateClock(el: HTMLElement, state: GameState) {
   const sky = daylight(state.time) > 0.1 ? '☀️' : '🌙';
   const sick = state.sick > 0 ? ' · 🤢 sick' : '';
-  const wound = state.wound ? (state.wound.kind === 'bleeding' ? ' · 🩸 bleeding' : ' · 🦶 sprained') : '';
+  const wound = state.wound?.infected ? ' · 🦠 infected' : state.wound ? (state.wound.kind === 'bleeding' ? ' · 🩸 bleeding' : ' · 🦶 sprained') : '';
   const shelter = isSheltered(state) ? ' · ⛺ sheltered' : '';
   const rain = state.weather.raining ? ' · 🌧 raining' : '';
   const wet = state.wet >= 20 ? (state.wet >= 60 ? ' · 💦 soaked' : ' · 💧 damp') : '';

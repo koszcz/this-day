@@ -9,7 +9,6 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-- **Infection**: a wound left untreated for 3 game hours turns into infection and sickness, and a clean bandage clears it. *Fun 2 · Effort S · Needs: Wounds*
 - **Roaming animals**: low-poly deer and hares wander the island and flee when you come near. *Fun 2 · Effort M*
 - **Jointed survivor**: the survivor gets a head, torso, two arms and two legs, built from low-poly shapes in code. The legs and arms swing while walking, and the figure breathes slightly when idle. *Fun 2 · Effort M*
 
@@ -36,6 +35,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Infection**: a wound left untreated for 3 game hours turns into infection and sickness, and a clean bandage clears it. *Fun 2 · Effort S* — 2026-11-04
 - **Crafting steps**: the axe and spear need a stone head, a handle and rope, made one step at a time. *Fun 2 · Effort M* — 2026-11-04
 - **Wounds**: slips on rock and spear fishing can cause bleeding that drains health, or a sprain that slows your walk. Rest or a plant-fibre bandage treats them. *Fun 2 · Effort M* — 2026-11-04
 - **Food spoils**: raw fish and berries rot after 6 game hours in your pack, and cooked fish lasts 24. Eating rotten food makes you sick. *Fun 2 · Effort M* — 2026-11-04
