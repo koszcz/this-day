@@ -3,6 +3,7 @@ import { tileAt } from '../world/query';
 import { say, type GameState } from './state';
 import { FIRE_WARM_RADIUS, isSheltered, litFireNear } from './structures';
 import { ambientWarmth } from './time';
+import { WET_CHILL } from './weather';
 
 // How many warmth points a lean-to adds to what your body drifts toward.
 const SHELTER_WARMTH = 32;
@@ -15,6 +16,7 @@ export function targetWarmth(state: GameState): number {
   if (isSheltered(state)) target += SHELTER_WARMTH;
   if (litFireNear(state, FIRE_WARM_RADIUS)) target = Math.max(target, 88);
   if (tileAt(state.world, state.player.x, state.player.y) === 'shallow') target -= 25;
+  target -= (state.wet / 100) * WET_CHILL;
   return clamp(target);
 }
 
@@ -29,7 +31,7 @@ export function tickNeeds(state: GameState, minutes: number) {
   } else {
     s.energy = clamp(s.energy - 0.03 * minutes);
   }
-  s.warmth = clamp(s.warmth + (targetWarmth(state) - s.warmth) * Math.min(1, 0.03 * minutes));
+  s.warmth = clamp(s.warmth + (targetWarmth(state) - s.warmth) * Math.min(1, 0.03 * (1 + state.wet / 100) * minutes));
   if (state.sick > 0) state.sick = Math.max(0, state.sick - minutes);
   applyHealth(state, minutes);
 }

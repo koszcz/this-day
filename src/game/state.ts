@@ -4,6 +4,7 @@ import type { Prop, World } from '../world/types';
 import type { Inventory } from './items';
 import { newSkills, type Skills } from './skills';
 import { START_MINUTE } from './time';
+import { newWeather, type Weather } from './weather';
 
 export interface Stats {
   health: number;
@@ -43,6 +44,9 @@ export interface GameState {
   skills: Skills;
   busy: BusyAction | null;
   sleeping: boolean;
+  weather: Weather;
+  // How soaked you are, 0 to 100.
+  wet: number;
   // Minutes of sickness left.
   sick: number;
   log: string[];
@@ -64,6 +68,8 @@ export function newGame(seed: number): GameState {
     skills: newSkills(),
     busy: null,
     sleeping: false,
+    weather: newWeather(START_MINUTE),
+    wet: 0,
     sick: 0,
     log: ['You wake up on cold ground. You do not know where you are.'],
     dead: null,

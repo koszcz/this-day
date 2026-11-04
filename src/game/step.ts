@@ -3,6 +3,7 @@ import { say, type GameState } from './state';
 import { finishBusy } from './actions';
 import { tickNeeds } from './needs';
 import { burnFires } from './structures';
+import { stepWeather, tickWet } from './weather';
 
 const SUBSTEP = 5;
 
@@ -17,6 +18,8 @@ function wakeReason(state: GameState): string | null {
 function stepOnce(state: GameState, minutes: number) {
   state.time += minutes;
   burnFires(state, minutes);
+  stepWeather(state);
+  tickWet(state, minutes);
   for (const p of state.props) {
     if (p.regrowAt !== null && state.time >= p.regrowAt) {
       p.amount = p.max;

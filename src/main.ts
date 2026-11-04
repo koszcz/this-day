@@ -10,6 +10,7 @@ import { pickObject, pickWater, sameTarget, type HoverTarget } from './game/hove
 import { createHighlight } from './render/highlight';
 import { groundPoint } from './input/pointer';
 import { buildDaylight } from './render/daylight';
+import { buildRain } from './render/rain';
 import { buildPlayer } from './render/player';
 import { buildProps } from './render/props';
 import { createStage } from './render/scene';
@@ -30,7 +31,10 @@ const $ = (id: string) => document.getElementById(id)!;
 
 const stage = createStage(canvas);
 const updateSky = buildDaylight(stage.scene);
-const updateBars = initStats($('stats'));
+const updateRain = buildRain(stage.scene);
+// How grey the sky is, 0 to 1. It eases toward the weather so rain fades in.
+let gloom = 0;
+const updateBars =initStats($('stats'));
 const clock = new THREE.Clock();
 
 let state: GameState = loadGame() ?? newGame((Math.random() * 1e9) | 0);
@@ -180,7 +184,9 @@ function frame() {
   view.structures.update(state.structures, elapsed);
   updateHover();
   stage.follow(p.position, dt);
-  updateSky(state.time, stage.focus);
+  gloom += ((state.weather.raining ? 1 : 0) - gloom) * Math.min(1, dt * 0.8);
+  updateSky(state.time, stage.focus, gloom);
+  updateRain(gloom, stage.focus, elapsed);
   stage.render();
 
   updateBars(state);

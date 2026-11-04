@@ -4,7 +4,7 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M · Branch: worktree-agent-a3db8885bbb7e136f*
+Nothing right now.
 
 ## Next
 
@@ -43,6 +43,8 @@ Triaged and ready to build, but not next.
 ## Done
 
 Newest first, with the date it was merged.
+
+- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M* — 2026-11-04
 
 - **Mouse and touch only**: WASD, the arrow keys, the number keys, `E` and Escape no longer do anything. You walk only by clicking or tapping the ground, and the help line shows no keys. *Fun 2 · Effort S* — 2026-11-04
 - **Click an object for its actions**: clicking an object opens a small HUD beside it with that object's actions, such as Chop tree, Pick berries, Drink, Fish, Cook fish or Add wood to the fire. Choosing an action walks you to the object first, then does it. Clicking yourself opens Sleep, Eat and Craft, and the bottom action bar goes. *Fun 3 · Effort M* — 2026-11-04

@@ -1,5 +1,6 @@
 // Saves the game to the browser so a refresh does not wipe your progress.
 import type { GameState } from './state';
+import { ensureWeather } from './weather';
 
 const KEY = 'this-day.save.v1';
 
@@ -15,6 +16,7 @@ export function loadGame(): GameState | null {
   try {
     const raw = localStorage.getItem(KEY);
     const state = raw ? (JSON.parse(raw) as GameState) : null;
+    if (state) ensureWeather(state);
     return state && !state.dead ? state : null;
   } catch {
     return null;
