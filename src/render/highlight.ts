@@ -19,6 +19,7 @@ function glowOf(m: THREE.MeshLambertMaterial): THREE.MeshLambertMaterial {
 export interface Lookup {
   prop: (id: number) => THREE.Object3D | undefined;
   structure: (id: number) => THREE.Object3D | undefined;
+  animal: (id: number) => THREE.Object3D | undefined;
   player: THREE.Object3D;
 }
 
@@ -47,7 +48,8 @@ export function createHighlight(parent: THREE.Object3D, lookup: Lookup) {
       tile.visible = true;
       return;
     }
-    const object = target.kind === 'player' ? lookup.player : target.kind === 'prop' ? lookup.prop(target.id) : lookup.structure(target.id);
+    const object =
+      target.kind === 'player' ? lookup.player : target.kind === 'prop' ? lookup.prop(target.id) : target.kind === 'animal' ? lookup.animal(target.id) : lookup.structure(target.id);
     object?.traverse((o) => {
       const mesh = o as THREE.Mesh;
       if (!mesh.isMesh || !(mesh.material instanceof THREE.MeshLambertMaterial)) return;

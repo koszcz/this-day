@@ -1,6 +1,7 @@
 // Moves the game clock forward: needs drain, fires burn, plants regrow and actions finish.
 import { say, type GameState } from './state';
 import { finishBusy } from './actions';
+import { tickAnimals } from './animals';
 import { tickNeeds } from './needs';
 import { rainOnFires } from './fire';
 import { burnFires } from './structures';
@@ -25,6 +26,7 @@ function stepOnce(state: GameState, minutes: number) {
   stepWeather(state);
   rainOnFires(state);
   tickWet(state, minutes);
+  tickAnimals(state, minutes);
   for (const p of state.props) {
     if (p.regrowAt !== null && state.time >= p.regrowAt) {
       p.amount = p.max;

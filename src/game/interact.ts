@@ -77,6 +77,8 @@ export function menuFor(state: GameState, target: HoverTarget): MenuEntry[] {
     case 'water': return waterMenu(state, target.x, target.y);
     case 'structure': return fireMenu(state, target.id);
     case 'player': return playerMenu(state);
+    // Animals have no actions yet, so a click on one is just a walk.
+    case 'animal': return [];
   }
 }
 
@@ -87,6 +89,8 @@ export function errandStep(state: GameState, errand: Errand): ErrandStep {
   switch (target.kind) {
     case 'player':
       return { kind: 'arrive' };
+    case 'animal':
+      return { kind: 'gone' };
     case 'prop': {
       const p = state.props.find((q) => q.id === target.id);
       if (!p || p.amount <= 0) return { kind: 'gone' };

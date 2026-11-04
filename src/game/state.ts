@@ -1,6 +1,7 @@
 // The whole game state in one plain object, plus how a new game starts.
 import { generateWorld } from '../world/generate';
 import type { Prop, World } from '../world/types';
+import { spawnAnimals, type Animal } from './animals';
 import type { Inventory, ItemId } from './items';
 import { newSkills, type Skills } from './skills';
 import { START_MINUTE } from './time';
@@ -39,6 +40,8 @@ export interface GameState {
   world: World;
   props: Prop[];
   structures: Structure[];
+  // Deer and hares wandering the island.
+  animals: Animal[];
   player: { x: number; y: number };
   stats: Stats;
   inventory: Inventory;
@@ -62,13 +65,14 @@ export interface GameState {
 
 export function newGame(seed: number): GameState {
   const { world, props } = generateWorld(seed);
-  return {
+  const state: GameState = {
     seed,
     rng: seed ^ 0x9e3779b9,
     time: START_MINUTE,
     world,
     props,
     structures: [],
+    animals: [],
     player: { ...world.start },
     stats: { health: 100, hunger: 70, thirst: 60, energy: 75, warmth: 60 },
     inventory: {},
@@ -84,6 +88,8 @@ export function newGame(seed: number): GameState {
     log: ['You wake up on cold ground. You do not know where you are.'],
     dead: null,
   };
+  state.animals = spawnAnimals(state);
+  return state;
 }
 
 export function say(state: GameState, text: string) {

@@ -6,6 +6,7 @@ import type { PropKind } from '../world/types';
 export function freshGame(seed = 1): GameState {
   const g = newGame(seed);
   g.props = [];
+  g.animals = [];
   return g;
 }
 

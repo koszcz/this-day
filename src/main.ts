@@ -11,6 +11,7 @@ import { createHighlight } from './render/highlight';
 import { groundPoint } from './input/pointer';
 import { buildDaylight } from './render/daylight';
 import { buildRain } from './render/rain';
+import { buildAnimals } from './render/animals';
 import { buildPlayer } from './render/player';
 import { buildProps } from './render/props';
 import { createStage } from './render/scene';
@@ -51,13 +52,14 @@ function mountWorld(g: GameState) {
   const props = buildProps(g.world, g.props);
   root.add(props.group);
   const structures = buildStructures(g.world, root);
+  const animals = buildAnimals(g.world, root, g.animals);
   const player = buildPlayer();
   root.add(player.root);
   stage.scene.add(root);
   player.root.position.set(g.player.x, surfaceHeight(g.world, g.player.x, g.player.y), g.player.y);
   stage.focus.copy(player.root.position);
-  const highlight = createHighlight(root, { prop: props.find, structure: structures.find, player: player.root });
-  return { root, props, structures, player, highlight, lastX: g.player.x, lastY: g.player.y, y: player.root.position.y };
+  const highlight = createHighlight(root, { prop: props.find, structure: structures.find, animal: animals.find, player: player.root });
+  return { root, props, structures, animals, player, highlight, lastX: g.player.x, lastY: g.player.y, y: player.root.position.y };
 }
 
 function restart() {
@@ -182,6 +184,7 @@ function frame() {
   view.player.update(moving, state.sleeping, elapsed);
   view.props.update();
   view.structures.update(state.structures, elapsed);
+  view.animals.update(state.animals, elapsed);
   updateHover();
   stage.follow(p.position, dt);
   gloom += ((state.weather.raining ? 1 : 0) - gloom) * Math.min(1, dt * 0.8);
