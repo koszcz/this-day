@@ -10,7 +10,9 @@ Nothing right now.
 
 At most 3 ideas, in the order we build them.
 
-Empty.
+- **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M*
+- **Say how to eat, sleep and make**: the hint line says to click the survivor to eat, sleep and make. *Fun 2 · Effort S*
+- **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S*
 
 
 ## Needs thought
@@ -23,9 +25,6 @@ Empty.
 
 Triaged and ready to build, but not next.
 
-- **Say how to eat, sleep and make**: the hint line says to click the survivor to eat, sleep and make. *Fun 2 · Effort S*
-- **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M*
-- **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S*
 - **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M*
 - **Stone head takes campfire stones**: making a stone head warns when it would use stones a campfire needs. *Fun 1 · Effort S*
 - **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S*
