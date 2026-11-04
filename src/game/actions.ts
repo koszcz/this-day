@@ -12,6 +12,7 @@ import { FIRE_MAX_FUEL, addStructure, litFireNear, nearest } from './structures'
 import { MINUTES_PER_DAY } from './time';
 import { rottenCount, takeUnit } from './spoilage';
 import { canCarry } from './weight';
+import { bandageWound, canBandage, maybeWound } from './wounds';
 import { freshTool, isTool, wearTool } from './wear';
 
 export interface Action {
@@ -98,6 +99,7 @@ function contextActions(state: GameState): Action[] {
         run: (g) => {
           train(g, 'fishing', 3);
           wearTool(g, 'spear');
+          maybeWound(g);
           if (roll(g) < 0.35 + skillLevel(g.skills.fishing) * 0.05 && canCarry(g.inventory, 'rawFish')) {
             addItem(g.inventory, 'rawFish');
             say(g, 'You spear a fish.');
@@ -154,7 +156,12 @@ function contextActions(state: GameState): Action[] {
     out.push({
       id: 'mine', label: 'Gather stone', icon: '🪨', minutes: Math.round(22 * speedFactor(s.labor)), energy: 4,
       blocked: packFull(state, 'stone'),
-      run: (g) => nearProp(g, 'stone') && gather(g, nearProp(g, 'stone')!, 'stone', 'labor', 5, 0.25),
+      run: (g) => {
+        const s = nearProp(g, 'stone');
+        if (!s) return;
+        gather(g, s, 'stone', 'labor', 5, 0.25);
+        maybeWound(g);
+      },
     });
   }
   return out;
@@ -265,6 +272,11 @@ function craftAction(r: Recipe): Action {
   };
 }
 
+const bandageAction: Action = {
+  id: 'bandage', label: 'Bandage wound', icon: '🩹', minutes: 3, energy: 0,
+  run: bandageWound,
+};
+
 const sleepAction: Action = {
   id: 'sleep', label: 'Sleep', icon: '😴', minutes: 0, energy: 0,
   run: (g) => {
@@ -276,6 +288,7 @@ const sleepAction: Action = {
 // Actions tied to where you stand and what you carry.
 export function availableActions(state: GameState): Action[] {
   const acts = [...contextActions(state), ...fireActions(state), ...eatActions(state)];
+  if (canBandage(state)) acts.push(bandageAction);
   if (state.stats.energy < 92) acts.push(sleepAction);
   return acts;
 }

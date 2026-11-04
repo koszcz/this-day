@@ -5,6 +5,7 @@ import { FIRE_WARM_RADIUS, isSheltered, litFireNear } from './structures';
 import { ambientWarmth } from './time';
 import { drainFactor } from './weight';
 import { WET_CHILL } from './weather';
+import { BLEED_DRAIN, isBleeding, tickWound } from './wounds';
 
 // How many warmth points a lean-to adds to what your body drifts toward.
 const SHELTER_WARMTH = 32;
@@ -34,10 +35,12 @@ export function tickNeeds(state: GameState, minutes: number) {
   }
   s.warmth = clamp(s.warmth + (targetWarmth(state) - s.warmth) * Math.min(1, 0.03 * (1 + state.wet / 100) * minutes));
   if (state.sick > 0) state.sick = Math.max(0, state.sick - minutes);
-  applyHealth(state, minutes);
+  const bleeding = isBleeding(state);
+  tickWound(state, minutes);
+  applyHealth(state, minutes, bleeding);
 }
 
-function applyHealth(state: GameState, minutes: number) {
+function applyHealth(state: GameState, minutes: number, bleeding: boolean) {
   const s = state.stats;
   let damage = 0;
   let cause = '';
@@ -50,8 +53,9 @@ function applyHealth(state: GameState, minutes: number) {
   if (s.warmth < 15) hurt(s.warmth <= 0 ? 0.25 : 0.1, 'froze to death');
   if (s.energy <= 0) hurt(0.08, 'collapsed from exhaustion');
   if (state.sick > 0) hurt(0.05, 'died of sickness');
+  if (bleeding) hurt(BLEED_DRAIN, 'bled to death');
   if (damage > 0) s.health = clamp(s.health - damage * minutes);
-  else if (s.hunger > 35 && s.thirst > 35 && s.warmth > 35 && state.sick === 0) s.health = clamp(s.health + 0.05 * minutes);
+  else if (s.hunger > 35 && s.thirst > 35 && s.warmth > 35 && state.sick === 0 && !bleeding) s.health = clamp(s.health + 0.05 * minutes);
   if (s.health <= 0 && !state.dead) {
     state.dead = cause || 'died';
     say(state, `You ${state.dead}.`);

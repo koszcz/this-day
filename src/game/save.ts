@@ -3,6 +3,7 @@ import type { GameState } from './state';
 import { ensureFood } from './spoilage';
 import { ensureWear } from './wear';
 import { ensureWeather } from './weather';
+import { ensureWound } from './wounds';
 
 const KEY = 'this-day.save.v1';
 
@@ -22,6 +23,7 @@ export function loadGame(): GameState | null {
       ensureWeather(state);
       ensureWear(state);
       ensureFood(state);
+      ensureWound(state);
     }
     return state && !state.dead ? state : null;
   } catch {

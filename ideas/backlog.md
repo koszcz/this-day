@@ -9,7 +9,6 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-- **Wounds**: slips on rock and spear fishing can cause bleeding that drains health, or a sprain that slows your walk. Rest or a plant-fibre bandage treats them. *Fun 2 · Effort M · Needs: Plant fibre*
 - **Crafting steps**: the axe and spear need a stone head, a handle and cordage, made one step at a time. *Fun 2 · Effort M · Needs: Plant fibre*
 
 ## Inbox
@@ -38,6 +37,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Wounds**: slips on rock and spear fishing can cause bleeding that drains health, or a sprain that slows your walk. Rest or a plant-fibre bandage treats them. *Fun 2 · Effort M* — 2026-11-04
 - **Food spoils**: raw fish and berries rot after 6 game hours in your pack, and cooked fish lasts 24. Eating rotten food makes you sick. *Fun 2 · Effort M* — 2026-11-04
 - **Plant fibre**: bushes give plant fibre, and a new Cordage recipe makes it into rope. *Fun 1 · Effort S* — 2026-11-04
 - **Fire-making**: a campfire needs tinder and kindling, and lighting it can fail. Rain puts out a fire with no lean-to beside it. *Fun 2 · Effort M* — 2026-11-04

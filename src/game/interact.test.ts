@@ -66,8 +66,8 @@ test('you offer food, Sleep and crafting', () => {
   give(g, 'wood', 2);
   give(g, 'stone', 2);
   const menu = menuFor(g, { kind: 'player' });
-  expect(menu.map((e) => e.id)).toEqual(['eat:berries', 'sleep', 'craft:campfire', 'craft:cordage', 'craft:axe', 'craft:spear', 'craft:shelter']);
-  expect(menu.map((e) => e.blocked)).toEqual([undefined, undefined, 'needs materials', 'needs materials', undefined, undefined, 'needs materials']);
+  expect(menu.map((e) => e.id)).toEqual(['eat:berries', 'sleep', 'craft:campfire', 'craft:cordage', 'craft:bandage', 'craft:axe', 'craft:spear', 'craft:shelter']);
+  expect(menu.map((e) => e.blocked)).toEqual([undefined, undefined, 'needs materials', 'needs materials', 'needs materials', undefined, undefined, 'needs materials']);
 });
 
 test('Sleep is blocked when you are rested', () => {

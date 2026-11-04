@@ -67,7 +67,7 @@ function playerMenu(state: GameState): MenuEntry[] {
     ...entryOf(action),
     blocked: enabled ? undefined : 'item' in recipe.makes && isTool(recipe.makes.item) && count(state.inventory, recipe.makes.item) > 0 ? 'you have one' : 'needs materials',
   }));
-  return [...here.filter((a) => a.id.startsWith('eat:')), sleep, ...crafts];
+  return [...here.filter((a) => a.id.startsWith('eat:') || a.id === 'bandage'), sleep, ...crafts];
 }
 
 // What the HUD offers when you click this object. Empty means the click is just a walk.

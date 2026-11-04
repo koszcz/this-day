@@ -26,10 +26,11 @@ export function initStats(root: HTMLElement) {
 export function updateClock(el: HTMLElement, state: GameState) {
   const sky = daylight(state.time) > 0.1 ? '☀️' : '🌙';
   const sick = state.sick > 0 ? ' · 🤢 sick' : '';
+  const wound = state.wound ? (state.wound.kind === 'bleeding' ? ' · 🩸 bleeding' : ' · 🦶 sprained') : '';
   const shelter = isSheltered(state) ? ' · ⛺ sheltered' : '';
   const rain = state.weather.raining ? ' · 🌧 raining' : '';
   const wet = state.wet >= 20 ? (state.wet >= 60 ? ' · 💦 soaked' : ' · 💧 damp') : '';
-  el.textContent = `${sky} Day ${dayNumber(state.time)} · ${clockText(state.time)}${rain}${wet}${shelter}${sick}`;
+  el.textContent = `${sky} Day ${dayNumber(state.time)} · ${clockText(state.time)}${rain}${wet}${shelter}${sick}${wound}`;
 }
 
 export function updateLog(el: HTMLElement, state: GameState) {
