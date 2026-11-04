@@ -1,5 +1,5 @@
-// Pack, crafting and skills panels, plus the action buttons. They only redraw when their content changes.
-import { availableActions, craftableActions } from '../game/actions';
+// Pack, crafting and skills panels, plus the progress bar. They only redraw when their content changes.
+import { craftableActions } from '../game/actions';
 import { ITEMS, type ItemId } from '../game/items';
 import { SKILL_NAMES, skillLevel, type SkillId } from '../game/skills';
 import type { GameState } from '../game/state';
@@ -30,14 +30,6 @@ export function updateCraft(el: HTMLElement, state: GameState) {
 export function updateSkills(el: HTMLElement, state: GameState) {
   const html = (Object.keys(SKILL_NAMES) as SkillId[])
     .map((id) => `<div class="row">${SKILL_NAMES[id]}<b>Lv ${skillLevel(state.skills[id])}</b></div>`)
-    .join('');
-  setHtml(el, html);
-}
-
-export function updateActions(el: HTMLElement, state: GameState) {
-  const locked = state.busy || state.sleeping;
-  const html = availableActions(state)
-    .map((a, i) => `<button data-action="${a.id}" ${locked || a.blocked ? 'disabled' : ''}><kbd>${i + 1}</kbd>${a.icon} ${a.label}${a.blocked ? `<small>${a.blocked}</small>` : a.minutes ? `<small>${a.minutes}m</small>` : ''}</button>`)
     .join('');
   setHtml(el, html);
 }

@@ -9,7 +9,6 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-- **Click an object for its actions**: clicking an object opens a small HUD beside it with that object's actions, such as Chop tree, Pick berries, Drink, Fish, Cook fish or Add wood to the fire. Choosing an action walks you to the object first, then does it. Clicking yourself opens Sleep, Eat and Craft, and the bottom action bar goes. *Fun 3 · Effort M · Needs: Hover highlights*
 - **Mouse and touch only**: WASD, the number keys and `E` stop working, and you walk only by clicking or tapping the ground. The help line and the key badges on the buttons go. *Fun 2 · Effort S*
 
 ## Inbox
@@ -47,6 +46,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Click an object for its actions**: clicking an object opens a small HUD beside it with that object's actions, such as Chop tree, Pick berries, Drink, Fish, Cook fish or Add wood to the fire. Choosing an action walks you to the object first, then does it. Clicking yourself opens Sleep, Eat and Craft, and the bottom action bar goes. *Fun 3 · Effort M* — 2026-11-04
 - **Hover highlights**: trees, bushes, stones, water, fires, lean-tos and your character glow and show a pointer cursor when the mouse is over them. On touch a tap shows the same glow as the HUD opens. *Fun 2 · Effort M* — 2026-11-04
 
 ## Dropped

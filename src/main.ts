@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { availableActions, startAction } from './game/actions';
 import { moveBy, WALK_SPEED } from './game/movement';
 import { clearSave, loadGame, saveGame } from './game/save';
-import { newGame, type GameState } from './game/state';
+import { newGame, say, type GameState } from './game/state';
 import { advance } from './game/step';
 import { GAME_MINUTES_PER_SECOND, SLEEP_SPEEDUP } from './game/time';
 import { pickObject, pickWater, sameTarget, type HoverTarget } from './game/hover';
@@ -18,8 +18,10 @@ import { buildStructures } from './render/structures';
 import { buildTerrain } from './render/terrain';
 import { surfaceHeight } from './world/query';
 import { LAYOUT } from './ui/layout';
+import { errandStep, menuFor, type Errand, type MenuEntry } from './game/interact';
+import { hideMenu, showMenu } from './ui/menu';
 import { showDeath, showIntro } from './ui/overlay';
-import { updateActions, updateBusy, updateCraft, updatePack, updateSkills } from './ui/panels';
+import { updateBusy, updateCraft, updatePack, updateSkills } from './ui/panels';
 import { initStats, updateClock, updateLog } from './ui/stats';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
@@ -35,6 +37,9 @@ const clock = new THREE.Clock();
 let state: GameState = loadGame() ?? newGame((Math.random() * 1e9) | 0);
 let started = false;
 let target: { x: number; y: number } | null = null;
+// The action you picked on an object, while you walk to it. And the menu that is open now.
+let errand: Errand | null = null;
+let menu: { target: HoverTarget; entries: MenuEntry[] } | null = null;
 let view: ReturnType<typeof mountWorld>;
 
 function mountWorld(g: GameState) {
@@ -59,8 +64,15 @@ function restart() {
   view = mountWorld(state);
   $('overlay').style.display = 'none';
   target = null;
+  errand = null;
+  closeMenu();
   hovered = null;
   shown = null;
+}
+
+function closeMenu() {
+  menu = null;
+  hideMenu($('menu'));
 }
 
 view = mountWorld(state);
@@ -68,6 +80,7 @@ showIntro($('overlay'), () => (started = true));
 
 listenKeys((key, shift) => {
   if (!started) return;
+  if (key === 'escape') closeMenu();
   const n = Number(key);
   if (n >= 1 && n <= 9 && !shift) {
     const act = availableActions(state)[n - 1];
@@ -80,11 +93,31 @@ listenKeys((key, shift) => {
 });
 
 hud.addEventListener('click', (e) => {
-  const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
+  const el = e.target as HTMLElement;
+  const btn = el.closest<HTMLElement>('[data-action]');
   if (btn) startAction(state, btn.dataset.action!);
+  const pick = el.closest<HTMLElement>('[data-pick]');
+  const entry = pick && menu?.entries[Number(pick.dataset.pick)];
+  if (entry && menu && !entry.blocked) {
+    errand = { target: menu.target, action: entry.id };
+    target = null;
+    closeMenu();
+  }
 });
+// A click on an object opens its menu. A click on anything else closes it and walks there.
 canvas.addEventListener('click', (e) => {
   if (!started || state.dead) return;
+  closeMenu();
+  errand = null;
+  if (state.busy || state.sleeping) return;
+  const clicked = pickAt(e);
+  const entries = clicked ? menuFor(state, clicked) : [];
+  if (clicked && entries.length) {
+    menu = { target: clicked, entries };
+    target = null;
+    showMenu($('menu'), entries, e.clientX, e.clientY);
+    return;
+  }
   target = groundPoint(e, stage.camera, canvas, view.y);
 });
 
@@ -120,8 +153,19 @@ function frame() {
   const elapsed = clock.elapsedTime;
   if (started && !state.dead) {
     const dir = walkDirection();
-    if (dir.x || dir.y) target = null;
-    else if (target) {
+    if (dir.x || dir.y) {
+      target = null;
+      errand = null;
+    } else if (errand && !state.busy && !state.sleeping) {
+      const step = errandStep(state, errand);
+      if (step.kind === 'walk') target = step;
+      else {
+        if (step.kind === 'arrive' && !startAction(state, errand.action)) say(state, 'You cannot do that right now.');
+        errand = null;
+        target = null;
+      }
+    }
+    if (!dir.x && !dir.y && target) {
       const dx = target.x - state.player.x;
       const dy = target.y - state.player.y;
       const d = Math.hypot(dx, dy);
@@ -163,7 +207,6 @@ function frame() {
   updatePack($('pack'), state);
   updateCraft($('craft'), state);
   updateSkills($('skills'), state);
-  updateActions($('actions'), state);
   updateBusy($('busy'), $('busy-bar'), $('busy-label'), state);
   requestAnimationFrame(frame);
 }
