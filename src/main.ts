@@ -1,6 +1,6 @@
-// Starts the game: builds the scene, runs the loop, and connects keys, clicks and the HUD.
+// Starts the game: builds the scene, runs the loop, and connects clicks, taps and the HUD.
 import * as THREE from 'three';
-import { availableActions, startAction } from './game/actions';
+import { startAction } from './game/actions';
 import { moveBy, WALK_SPEED } from './game/movement';
 import { clearSave, loadGame, saveGame } from './game/save';
 import { newGame, say, type GameState } from './game/state';
@@ -8,7 +8,6 @@ import { advance } from './game/step';
 import { GAME_MINUTES_PER_SECOND, SLEEP_SPEEDUP } from './game/time';
 import { pickObject, pickWater, sameTarget, type HoverTarget } from './game/hover';
 import { createHighlight } from './render/highlight';
-import { listenKeys, walkDirection } from './input/keys';
 import { groundPoint } from './input/pointer';
 import { buildDaylight } from './render/daylight';
 import { buildPlayer } from './render/player';
@@ -78,20 +77,6 @@ function closeMenu() {
 view = mountWorld(state);
 showIntro($('overlay'), () => (started = true));
 
-listenKeys((key, shift) => {
-  if (!started) return;
-  if (key === 'escape') closeMenu();
-  const n = Number(key);
-  if (n >= 1 && n <= 9 && !shift) {
-    const act = availableActions(state)[n - 1];
-    if (act) startAction(state, act.id);
-  }
-  if (key === 'e') {
-    const act = availableActions(state)[0];
-    if (act) startAction(state, act.id);
-  }
-});
-
 hud.addEventListener('click', (e) => {
   const el = e.target as HTMLElement;
   const btn = el.closest<HTMLElement>('[data-action]');
@@ -152,11 +137,8 @@ function frame() {
   const dt = Math.min(clock.getDelta(), 0.1);
   const elapsed = clock.elapsedTime;
   if (started && !state.dead) {
-    const dir = walkDirection();
-    if (dir.x || dir.y) {
-      target = null;
-      errand = null;
-    } else if (errand && !state.busy && !state.sleeping) {
+    const dir = { x: 0, y: 0 };
+    if (errand && !state.busy && !state.sleeping) {
       const step = errandStep(state, errand);
       if (step.kind === 'walk') target = step;
       else {
@@ -165,7 +147,7 @@ function frame() {
         target = null;
       }
     }
-    if (!dir.x && !dir.y && target) {
+    if (target) {
       const dx = target.x - state.player.x;
       const dy = target.y - state.player.y;
       const d = Math.hypot(dx, dy);
