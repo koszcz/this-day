@@ -10,7 +10,9 @@ Nothing right now.
 
 At most 3 ideas, in the order we build them.
 
-Empty.
+- **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M*
+- **Fix the clipped action menu**: the action menu stays inside the screen and is never cut off at the bottom. *Fun 1 · Effort S*
+- **Stone head takes campfire stones**: making a stone head warns when it would use stones a campfire needs. *Fun 1 · Effort S*
 
 
 ## Needs thought
@@ -23,10 +25,7 @@ Empty.
 
 Triaged and ready to build, but not next.
 
-- **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M*
-- **Stone head takes campfire stones**: making a stone head warns when it would use stones a campfire needs. *Fun 1 · Effort S*
 - **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S*
-- **Fix the clipped action menu**: the action menu stays inside the screen and is never cut off at the bottom. *Fun 1 · Effort S*
 
 ## Done
 
