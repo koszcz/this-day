@@ -8,9 +8,17 @@ import { walkFactor } from './wounds';
 export const WALK_SPEED = 4;
 const BLOCK_RADIUS = 0.38;
 
-function blocked(state: GameState, x: number, y: number): boolean {
-  if (!isWalkable(state.world, x, y)) return true;
-  return state.props.some((p) => (p.amount > 0 || p.kind === 'bush') && hypot(p.x - x, p.y - y) < BLOCK_RADIUS);
+function propAt(state: GameState, x: number, y: number) {
+  return state.props.find((p) => (p.amount > 0 || p.kind === 'bush') && hypot(p.x - x, p.y - y) < BLOCK_RADIUS);
+}
+
+export function blocked(state: GameState, x: number, y: number): boolean {
+  return !isWalkable(state.world, x, y) || propAt(state, x, y) !== undefined;
+}
+
+// Names what holds a point: a prop kind, or the shore.
+export function blockerAt(state: GameState, x: number, y: number): string {
+  return propAt(state, x, y)?.kind ?? 'shore';
 }
 
 // Moves toward (dx, dy) in tiles, sliding along obstacles one axis at a time.

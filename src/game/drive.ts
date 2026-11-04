@@ -5,6 +5,7 @@ import { errandStep, type Errand } from './interact';
 import { moveBy, WALK_SPEED } from './movement';
 import { say, type GameState } from './state';
 import { advance } from './step';
+import { unstick } from './unstick';
 import { GAME_MINUTES_PER_SECOND, SLEEP_SPEEDUP } from './time';
 
 // What the player told the survivor to do: a point to walk to, and an action to do on an object.
@@ -20,6 +21,7 @@ export function tick(state: GameState, driver: Driver, seconds: number) {
   if (state.dead) return;
   const dir = { x: 0, y: 0 };
   const free = !state.busy && !state.sleeping;
+  if (free) unstick(state);
   if (driver.errand && free) {
     const step = errandStep(state, driver.errand);
     if (step.kind === 'walk') driver.target = step;
