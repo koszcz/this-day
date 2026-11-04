@@ -4,7 +4,7 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-- **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S · Branch: worktree-agent-aaf92dc8282810bfd*
+Nothing right now.
 
 ## Next
 
@@ -32,6 +32,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S* — 2026-11-04
 - **Say how to eat, sleep and make**: the hint line says to click the survivor to eat, sleep and make. *Fun 2 · Effort S* — 2026-11-04
 - **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M* — 2026-11-04
 - **Explain disabled MAKE cards**: a disabled MAKE card says what is missing, such as "needs 2 wood", in the Make panel and in the survivor's menu. *Fun 2 · Effort S* — 2026-11-04
