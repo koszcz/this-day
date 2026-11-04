@@ -25,6 +25,28 @@ function limb(length: number, radius: number, color: string, endColor: string, e
   return pivot;
 }
 
+// A pale copy of every part, drawn only where something stands in front of it.
+// So the survivor shows through trees, rocks and hills as a flat outline shape.
+const SEE_THROUGH = new THREE.MeshBasicMaterial({
+  color: '#fff3c4',
+  transparent: true,
+  opacity: 0.7,
+  depthFunc: THREE.GreaterDepth,
+  depthWrite: false,
+});
+
+function addSeeThrough(root: THREE.Object3D) {
+  const parts: THREE.Mesh[] = [];
+  root.traverse((o) => {
+    if ((o as THREE.Mesh).isMesh) parts.push(o as THREE.Mesh);
+  });
+  for (const part of parts) {
+    const ghost = new THREE.Mesh(part.geometry, SEE_THROUGH);
+    ghost.renderOrder = 10;
+    part.add(ghost);
+  }
+}
+
 export function buildPlayer() {
   const root = new THREE.Group();
   // The body group tilts and lifts as a whole, so the root stays free for position and heading.
@@ -107,6 +129,7 @@ export function buildPlayer() {
     if (weight <= 0 || !lastKind) return applyPose(base);
     applyPose(blendPose(base, actionPose(lastKind, elapsed), weight));
   };
+  addSeeThrough(root);
   update(false, false, 0);
   return { root, joints, applyPose, update };
 }

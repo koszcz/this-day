@@ -122,7 +122,11 @@ let shown: HoverTarget | null = null;
 function pickAt(e: PointerEvent): HoverTarget | null {
   const high = groundPoint(e, stage.camera, canvas, view.y + 0.8);
   const low = groundPoint(e, stage.camera, canvas, view.y);
-  return (high && pickObject(state, high.x, high.y)) || (low && (pickObject(state, low.x, low.y) ?? pickWater(state, low.x, low.y))) || null;
+  const atHigh = high && pickObject(state, high.x, high.y);
+  const atLow = low && pickObject(state, low.x, low.y);
+  // She wins at either height, even when a tree stands in front of her.
+  if (atHigh?.kind === 'player' || atLow?.kind === 'player') return { kind: 'player' };
+  return atHigh || atLow || (low && pickWater(state, low.x, low.y)) || null;
 }
 canvas.addEventListener('pointermove', (e) => {
   if (e.pointerType === 'mouse' && started && !state.dead) hovered = pickAt(e);

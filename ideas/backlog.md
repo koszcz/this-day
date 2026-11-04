@@ -4,7 +4,7 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-- **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M · Branch: worktree-agent-a9de58a43a7de9799*
+Nothing right now.
 
 ## Next
 
@@ -12,6 +12,7 @@ At most 3 ideas, in the order we build them.
 
 - **Fix the clipped action menu**: the action menu stays inside the screen and is never cut off at the bottom. *Fun 1 · Effort S*
 - **Stone head takes campfire stones**: making a stone head warns when it would use stones a campfire needs. *Fun 1 · Effort S*
+- **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S*
 
 
 ## Needs thought
@@ -24,12 +25,13 @@ Empty.
 
 Triaged and ready to build, but not next.
 
-- **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S*
+Empty.
 
 ## Done
 
 Newest first, with the date it was merged.
 
+- **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M* — 2026-11-04
 - **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S* — 2026-11-04
 - **Say how to eat, sleep and make**: the hint line says to click the survivor to eat, sleep and make. *Fun 2 · Effort S* — 2026-11-04
 - **Point to water**: when thirst is low, a message names the direction of the nearest water. *Fun 3 · Effort M* — 2026-11-04

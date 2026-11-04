@@ -42,6 +42,24 @@ test('the mouse over a fire or a lean-to picks that structure', () => {
   expect(pickObject(g, g.player.x - 3.4, g.player.y)).toEqual({ kind: 'structure', id: 2 });
 });
 
+test('a click on the survivor beats a tree standing over her', () => {
+  const g = freshGame();
+  putProp(g, 'tree', 0.3, 0);
+  expect(pickObject(g, g.player.x + 0.3, g.player.y)).toEqual({ kind: 'player' });
+});
+
+test('a click on the survivor beats a fire beside her', () => {
+  const g = freshGame();
+  g.structures = [{ id: 1, kind: 'fire', x: g.player.x + 0.2, y: g.player.y, fuel: 10 }];
+  expect(pickObject(g, g.player.x + 0.2, g.player.y)).toEqual({ kind: 'player' });
+});
+
+test('a click outside her reach still picks the object beside her', () => {
+  const g = freshGame();
+  putProp(g, 'tree', 0.8, 0);
+  expect(pickObject(g, g.player.x + 0.8, g.player.y)).toEqual({ kind: 'prop', id: 0 });
+});
+
 test('water is picked by its tile, and land is not', () => {
   const g = freshGame();
   expect(pickWater(g, 0.5, 0.5)).toEqual({ kind: 'water', x: 0, y: 0 });
