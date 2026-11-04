@@ -4,13 +4,13 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-Nothing right now.
+- **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S · Branch: worktree-agent-aaf92dc8282810bfd*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Idle with no message**: when the survivor cannot reach a target, such as a bush in dense forest, she says why instead of idling, and she steps to a reachable spot first when one is near. *Fun 2 · Effort S*
+Empty.
 
 
 ## Needs thought
