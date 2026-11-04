@@ -4,12 +4,14 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
+- **Explain disabled MAKE cards**: a disabled MAKE card says what is missing. *Fun 2 · Effort S · Branch: worktree-agent-a1c44aed60cec0276*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Explain disabled MAKE cards**: a disabled MAKE card says what is missing. *Fun 2 · Effort S*
+Empty.
+
 
 ## Needs thought
 
