@@ -9,7 +9,6 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-- **Carry weight**: the pack has a weight limit, and a heavy load slows your walk and drains energy faster. *Fun 2 · Effort S*
 - **Fire-making**: a campfire needs tinder and kindling, and lighting it can fail. Rain puts out a fire with no lean-to beside it. *Fun 2 · Effort M · Needs: Rain and wet*
 - **Plant fibre**: bushes give plant fibre, and a new Cordage recipe makes it into rope. *Fun 1 · Effort S*
 
@@ -42,6 +41,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Carry weight**: the pack has a weight limit, and a heavy load slows your walk and drains energy faster. *Fun 2 · Effort S* — 2026-11-04
 - **Tool wear**: the axe breaks after 20 uses and the spear after 12, and you craft a new one. The pack shows uses left. *Fun 2 · Effort S* — 2026-11-04
 - **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S* — 2026-11-04
 - **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M* — 2026-11-04

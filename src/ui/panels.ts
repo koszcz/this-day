@@ -4,6 +4,7 @@ import { ITEMS, type ItemId } from '../game/items';
 import { SKILL_NAMES, skillLevel, type SkillId } from '../game/skills';
 import type { GameState } from '../game/state';
 import { isTool, usesLeft } from '../game/wear';
+import { MAX_LOAD, carryLoad, encumbrance } from '../game/weight';
 
 function setHtml(el: HTMLElement, html: string) {
   if (el.dataset.last === html) return;
@@ -18,7 +19,10 @@ export function updatePack(el: HTMLElement, state: GameState) {
       const left = isTool(id) ? ` <small>(${usesLeft(state, id)} uses left)</small>` : '';
       return `<div class="row">${ITEMS[id].icon} ${ITEMS[id].name}${left}<b>${state.inventory[id]}</b></div>`;
     });
-  setHtml(el, rows.join('') || '<div class="row dim">Empty</div>');
+  const load = carryLoad(state.inventory);
+  const note = load >= MAX_LOAD ? ' (full)' : encumbrance(state.inventory) > 0 ? ' (heavy)' : '';
+  const head = `<div class="row"><small>Load${note}</small><b>${load} / ${MAX_LOAD}</b></div>`;
+  setHtml(el, head + (rows.join('') || '<div class="row dim">Empty</div>'));
 }
 
 export function updateCraft(el: HTMLElement, state: GameState) {

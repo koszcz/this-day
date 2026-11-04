@@ -9,6 +9,7 @@ import { gainXp, SKILL_NAMES, skillLevel, speedFactor, type SkillId } from './sk
 import { say, type GameState } from './state';
 import { FIRE_MAX_FUEL, addStructure, litFireNear, nearest } from './structures';
 import { MINUTES_PER_DAY } from './time';
+import { canCarry } from './weight';
 import { freshTool, isTool, wearTool } from './wear';
 
 export interface Action {
@@ -50,12 +51,19 @@ function train(state: GameState, skill: SkillId, xp: number) {
 }
 
 function gather(state: GameState, prop: Prop, item: ItemId, skill: SkillId, regrowDays: number, bonus: number) {
-  const extra = roll(state) < bonus + skillLevel(state.skills[skill]) * 0.05 ? 1 : 0;
+  const lucky = roll(state) < bonus + skillLevel(state.skills[skill]) * 0.05;
+  if (!canCarry(state.inventory, item)) {
+    say(state, 'Your pack is too full.');
+    return;
+  }
+  const extra = lucky && canCarry(state.inventory, item, 2) ? 1 : 0;
   addItem(state.inventory, item, 1 + extra);
   deplete(state, prop, regrowDays);
   train(state, skill, 3);
   say(state, `You get ${1 + extra} ${ITEMS[item].name.toLowerCase()}.`);
 }
+
+const packFull = (state: GameState, item: ItemId) => (canCarry(state.inventory, item) ? undefined : 'pack is full');
 
 function contextActions(state: GameState): Action[] {
   const out: Action[] = [];
@@ -74,10 +82,11 @@ function contextActions(state: GameState): Action[] {
     if (count(state.inventory, 'spear') > 0) {
       out.push({
         id: 'fish', label: 'Fish', icon: '🐟', minutes: Math.round(35 * speedFactor(s.fishing)), energy: 4,
+        blocked: packFull(state, 'rawFish'),
         run: (g) => {
           train(g, 'fishing', 3);
           wearTool(g, 'spear');
-          if (roll(g) < 0.35 + skillLevel(g.skills.fishing) * 0.05) {
+          if (roll(g) < 0.35 + skillLevel(g.skills.fishing) * 0.05 && canCarry(g.inventory, 'rawFish')) {
             addItem(g.inventory, 'rawFish');
             say(g, 'You spear a fish.');
           } else say(g, 'The fish slip away.');
@@ -89,6 +98,7 @@ function contextActions(state: GameState): Action[] {
   if (bush) {
     out.push({
       id: 'forage', label: 'Pick berries', icon: '🫐', minutes: Math.round(10 * speedFactor(s.foraging)), energy: 1,
+      blocked: packFull(state, 'berries'),
       run: (g) => nearProp(g, 'bush') && gather(g, nearProp(g, 'bush')!, 'berries', 'foraging', 1.5, 0.2),
     });
   }
@@ -97,6 +107,7 @@ function contextActions(state: GameState): Action[] {
     const axe = count(state.inventory, 'axe') > 0;
     out.push({
       id: 'chop', label: axe ? 'Chop tree' : 'Break branches', icon: '🪵', minutes: Math.round((axe ? 14 : 36) * speedFactor(s.labor)), energy: axe ? 4 : 6,
+      blocked: packFull(state, 'wood'),
       run: (g) => {
         const t = nearProp(g, 'tree');
         if (!t) return;
@@ -109,6 +120,7 @@ function contextActions(state: GameState): Action[] {
   if (stone) {
     out.push({
       id: 'mine', label: 'Gather stone', icon: '🪨', minutes: Math.round(22 * speedFactor(s.labor)), energy: 4,
+      blocked: packFull(state, 'stone'),
       run: (g) => nearProp(g, 'stone') && gather(g, nearProp(g, 'stone')!, 'stone', 'labor', 5, 0.25),
     });
   }

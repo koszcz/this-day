@@ -3,6 +3,7 @@ import { say, type GameState } from './state';
 import { finishBusy } from './actions';
 import { tickNeeds } from './needs';
 import { burnFires } from './structures';
+import { drainFactor } from './weight';
 import { stepWeather, tickWet } from './weather';
 
 const SUBSTEP = 5;
@@ -29,7 +30,7 @@ function stepOnce(state: GameState, minutes: number) {
   const busy = state.busy;
   if (busy) {
     const used = Math.min(minutes, busy.remaining);
-    state.stats.energy = Math.max(0, state.stats.energy - (busy.energy * used) / busy.total);
+    state.stats.energy = Math.max(0, state.stats.energy - (busy.energy * drainFactor(state.inventory) * used) / busy.total);
     busy.remaining -= used;
   }
   tickNeeds(state, minutes);

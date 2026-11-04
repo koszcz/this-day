@@ -2,6 +2,7 @@
 import { hypot } from '../math/exact';
 import { isWalkable, tileAt } from '../world/query';
 import type { GameState } from './state';
+import { speedPenalty } from './weight';
 
 export const WALK_SPEED = 4;
 const BLOCK_RADIUS = 0.38;
@@ -15,7 +16,8 @@ function blocked(state: GameState, x: number, y: number): boolean {
 export function moveBy(state: GameState, dx: number, dy: number) {
   if (state.busy || state.sleeping || state.dead) return;
   const slow = tileAt(state.world, state.player.x, state.player.y) === 'shallow' ? 0.6 : 1;
+  const load = speedPenalty(state.inventory);
   const { x, y } = state.player;
-  if (!blocked(state, x + dx * slow, y)) state.player.x = x + dx * slow;
-  if (!blocked(state, state.player.x, y + dy * slow)) state.player.y = y + dy * slow;
+  if (!blocked(state, x + dx * slow * load, y)) state.player.x = x + dx * slow * load;
+  if (!blocked(state, state.player.x, y + dy * slow * load)) state.player.y = y + dy * slow * load;
 }

@@ -4,18 +4,20 @@ export type ItemId = 'wood' | 'stone' | 'berries' | 'rawFish' | 'cookedFish' | '
 export interface ItemDef {
   name: string;
   icon: string;
+  // How much it adds to your load.
+  weight: number;
   // Present on food: how much hunger it restores and the chance it makes you sick.
   food?: { hunger: number; sickChance: number };
 }
 
 export const ITEMS: Record<ItemId, ItemDef> = {
-  wood: { name: 'Wood', icon: '🪵' },
-  stone: { name: 'Stone', icon: '🪨' },
-  berries: { name: 'Berries', icon: '🫐', food: { hunger: 8, sickChance: 0.03 } },
-  rawFish: { name: 'Raw fish', icon: '🐟', food: { hunger: 22, sickChance: 0.3 } },
-  cookedFish: { name: 'Cooked fish', icon: '🍖', food: { hunger: 40, sickChance: 0 } },
-  axe: { name: 'Stone axe', icon: '🪓' },
-  spear: { name: 'Spear', icon: '🔱' },
+  wood: { name: 'Wood', icon: '🪵', weight: 3 },
+  stone: { name: 'Stone', icon: '🪨', weight: 4 },
+  berries: { name: 'Berries', icon: '🫐', weight: 1, food: { hunger: 8, sickChance: 0.03 } },
+  rawFish: { name: 'Raw fish', icon: '🐟', weight: 2, food: { hunger: 22, sickChance: 0.3 } },
+  cookedFish: { name: 'Cooked fish', icon: '🍖', weight: 2, food: { hunger: 40, sickChance: 0 } },
+  axe: { name: 'Stone axe', icon: '🪓', weight: 4 },
+  spear: { name: 'Spear', icon: '🔱', weight: 3 },
 };
 
 export type Inventory = Partial<Record<ItemId, number>>;
