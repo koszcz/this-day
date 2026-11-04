@@ -22,7 +22,7 @@ test('a bush offers berries and a stone offers stone', () => {
   const g = freshGame();
   putProp(g, 'bush', 5, 0);
   putProp(g, 'stone', -5, 0);
-  expect(ids(g, { kind: 'prop', id: 0 })).toEqual(['forage', 'tinder']);
+  expect(ids(g, { kind: 'prop', id: 0 })).toEqual(['forage', 'tinder', 'fibre']);
   expect(ids(g, { kind: 'prop', id: 1 })).toEqual(['mine']);
 });
 
@@ -66,8 +66,8 @@ test('you offer food, Sleep and crafting', () => {
   give(g, 'wood', 2);
   give(g, 'stone', 2);
   const menu = menuFor(g, { kind: 'player' });
-  expect(menu.map((e) => e.id)).toEqual(['eat:berries', 'sleep', 'craft:campfire', 'craft:axe', 'craft:spear', 'craft:shelter']);
-  expect(menu.map((e) => e.blocked)).toEqual([undefined, undefined, 'needs materials', undefined, undefined, 'needs materials']);
+  expect(menu.map((e) => e.id)).toEqual(['eat:berries', 'sleep', 'craft:campfire', 'craft:cordage', 'craft:axe', 'craft:spear', 'craft:shelter']);
+  expect(menu.map((e) => e.blocked)).toEqual([undefined, undefined, 'needs materials', 'needs materials', undefined, undefined, 'needs materials']);
 });
 
 test('Sleep is blocked when you are rested', () => {

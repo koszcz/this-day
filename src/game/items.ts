@@ -1,5 +1,5 @@
 // Everything you can carry, and what eating it does.
-export type ItemId = 'wood' | 'stone' | 'berries' | 'rawFish' | 'cookedFish' | 'axe' | 'spear' | 'tinder' | 'kindling';
+export type ItemId = 'wood' | 'stone' | 'berries' | 'rawFish' | 'cookedFish' | 'axe' | 'spear' | 'tinder' | 'kindling' | 'fibre' | 'rope';
 
 export interface ItemDef {
   name: string;
@@ -20,6 +20,8 @@ export const ITEMS: Record<ItemId, ItemDef> = {
   spear: { name: 'Spear', icon: '🔱', weight: 3 },
   tinder: { name: 'Tinder', icon: '🌾', weight: 0.5 },
   kindling: { name: 'Kindling', icon: '🥢', weight: 1 },
+  fibre: { name: 'Plant fibre', icon: '🌿', weight: 0.5 },
+  rope: { name: 'Rope', icon: '🪢', weight: 1 },
 };
 
 export type Inventory = Partial<Record<ItemId, number>>;

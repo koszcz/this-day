@@ -5,6 +5,7 @@ import { availableActions, craftableActions } from './actions';
 import type { HoverTarget } from './hover';
 import { count } from './items';
 import type { GameState } from './state';
+import { isTool } from './wear';
 
 export interface MenuEntry {
   id: string;
@@ -26,7 +27,7 @@ export type ErrandStep = { kind: 'walk'; x: number; y: number } | { kind: 'arriv
 const PROP_REACH = 1.2;
 const FIRE_REACH = 1.3;
 
-const PROP_ACTIONS: Record<string, string[]> = { tree: ['chop', 'kindling'], bush: ['forage', 'tinder'], stone: ['mine'] };
+const PROP_ACTIONS: Record<string, string[]> = { tree: ['chop', 'kindling'], bush: ['forage', 'tinder', 'fibre'], stone: ['mine'] };
 
 const entryOf = (a: { id: string; label: string; icon: string; minutes: number; blocked?: string }): MenuEntry => ({
   id: a.id, label: a.label, icon: a.icon, minutes: a.minutes, blocked: a.blocked,
@@ -64,7 +65,7 @@ function playerMenu(state: GameState): MenuEntry[] {
   const sleep = here.find((a) => a.id === 'sleep') ?? { id: 'sleep', label: 'Sleep', icon: '😴', minutes: 0, blocked: 'not tired' };
   const crafts = craftableActions(state).map(({ recipe, action, enabled }) => ({
     ...entryOf(action),
-    blocked: enabled ? undefined : 'item' in recipe.makes && count(state.inventory, recipe.makes.item) > 0 ? 'you have one' : 'needs materials',
+    blocked: enabled ? undefined : 'item' in recipe.makes && isTool(recipe.makes.item) && count(state.inventory, recipe.makes.item) > 0 ? 'you have one' : 'needs materials',
   }));
   return [...here.filter((a) => a.id.startsWith('eat:')), sleep, ...crafts];
 }

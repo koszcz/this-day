@@ -134,6 +134,13 @@ function contextActions(state: GameState): Action[] {
       run: (g) => gatherLoose(g, 'tinder', 'You pull dry grass from under the bush.'),
     });
   }
+  if (bush) {
+    out.push({
+      id: 'fibre', label: 'Strip fibre', icon: '🌿', minutes: 8, energy: 1,
+      blocked: packFull(state, 'fibre'),
+      run: (g) => gatherLoose(g, 'fibre', 'You strip tough fibre from the bush stems.'),
+    });
+  }
   if (tree) {
     out.push({
       id: 'kindling', label: 'Gather kindling', icon: '🥢', minutes: 8, energy: 1,
@@ -220,7 +227,7 @@ function eatActions(state: GameState): Action[] {
 }
 
 export function canCraft(state: GameState, r: Recipe): boolean {
-  if ('item' in r.makes && count(state.inventory, r.makes.item) > 0) return false;
+  if ('item' in r.makes && isTool(r.makes.item) && count(state.inventory, r.makes.item) > 0) return false;
   return Object.entries(r.cost).every(([id, n]) => count(state.inventory, id as ItemId) >= n);
 }
 
