@@ -4,12 +4,11 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-Nothing right now.
+- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M · Branch: worktree-agent-a3db8885bbb7e136f*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
-- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M*
 - **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S*
 - **Tool wear**: the axe breaks after 20 uses and the spear after 12, and you craft a new one. *Fun 2 · Effort S*
 
