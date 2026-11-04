@@ -4,13 +4,12 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-Nothing right now.
+- **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M · Branch: worktree-agent-a9de58a43a7de9799*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Find the survivor**: the survivor shows through trees as an outline, and clicks on her win over objects behind her. *Fun 2 · Effort M*
 - **Fix the clipped action menu**: the action menu stays inside the screen and is never cut off at the bottom. *Fun 1 · Effort S*
 - **Stone head takes campfire stones**: making a stone head warns when it would use stones a campfire needs. *Fun 1 · Effort S*
 
