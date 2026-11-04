@@ -9,8 +9,9 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-
-Empty.
+- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M*
+- **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S*
+- **Tool wear**: the axe breaks after 20 uses and the spear after 12, and you craft a new one. *Fun 2 · Effort S*
 
 ## Inbox
 
@@ -27,9 +28,6 @@ Empty.
 ## Later
 
 Triaged and ready to build, but not next.
-- **Rain and wet**: random rain spells darken the sky. Outside a lean-to you get wet, and wet pulls warmth down fast until you dry by a lit fire or in the lean-to. No wind and no seasons. *Fun 3 · Effort M*
-- **Dirty water**: drinking sea or pond water makes you sick 40% of the time. A new "Boil and drink" action at a lit campfire makes it safe. *Fun 2 · Effort S*
-- **Tool wear**: the axe breaks after 20 uses and the spear after 12, and you craft a new one. *Fun 2 · Effort S*
 - **Carry weight**: the pack has a weight limit, and a heavy load slows your walk and drains energy faster. *Fun 2 · Effort S*
 - **Food spoils**: raw fish and berries rot after 6 game hours in your pack, and cooked fish lasts 24. Eating rotten food makes you sick. *Fun 2 · Effort M*
 - **Fire-making**: a campfire needs tinder and kindling, and lighting it can fail. Rain puts out a fire with no lean-to beside it. *Fun 2 · Effort M · Needs: Rain and wet*
