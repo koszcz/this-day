@@ -42,6 +42,8 @@ export interface GameState {
   stats: Stats;
   inventory: Inventory;
   skills: Skills;
+  // Uses left on the axe and spear you carry.
+  toolUses: Partial<Record<'axe' | 'spear', number>>;
   busy: BusyAction | null;
   sleeping: boolean;
   weather: Weather;
@@ -66,6 +68,7 @@ export function newGame(seed: number): GameState {
     stats: { health: 100, hunger: 70, thirst: 60, energy: 75, warmth: 60 },
     inventory: {},
     skills: newSkills(),
+    toolUses: {},
     busy: null,
     sleeping: false,
     weather: newWeather(START_MINUTE),

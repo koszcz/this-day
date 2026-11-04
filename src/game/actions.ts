@@ -9,6 +9,7 @@ import { gainXp, SKILL_NAMES, skillLevel, speedFactor, type SkillId } from './sk
 import { say, type GameState } from './state';
 import { FIRE_MAX_FUEL, addStructure, litFireNear, nearest } from './structures';
 import { MINUTES_PER_DAY } from './time';
+import { freshTool, isTool, wearTool } from './wear';
 
 export interface Action {
   id: string;
@@ -75,6 +76,7 @@ function contextActions(state: GameState): Action[] {
         id: 'fish', label: 'Fish', icon: '🐟', minutes: Math.round(35 * speedFactor(s.fishing)), energy: 4,
         run: (g) => {
           train(g, 'fishing', 3);
+          wearTool(g, 'spear');
           if (roll(g) < 0.35 + skillLevel(g.skills.fishing) * 0.05) {
             addItem(g.inventory, 'rawFish');
             say(g, 'You spear a fish.');
@@ -95,7 +97,12 @@ function contextActions(state: GameState): Action[] {
     const axe = count(state.inventory, 'axe') > 0;
     out.push({
       id: 'chop', label: axe ? 'Chop tree' : 'Break branches', icon: '🪵', minutes: Math.round((axe ? 14 : 36) * speedFactor(s.labor)), energy: axe ? 4 : 6,
-      run: (g) => nearProp(g, 'tree') && gather(g, nearProp(g, 'tree')!, 'wood', 'labor', 4, axe ? 0.3 : 0),
+      run: (g) => {
+        const t = nearProp(g, 'tree');
+        if (!t) return;
+        gather(g, t, 'wood', 'labor', 4, axe ? 0.3 : 0);
+        if (axe) wearTool(g, 'axe');
+      },
     });
   }
   const stone = nearProp(state, 'stone');
@@ -174,7 +181,10 @@ function craftAction(r: Recipe): Action {
     id: `craft:${r.id}`, label: `Make ${r.name.toLowerCase()}`, icon: r.icon, minutes: r.minutes, energy: 3,
     run: (g) => {
       for (const [id, n] of Object.entries(r.cost)) removeItem(g.inventory, id as ItemId, n);
-      if ('item' in r.makes) addItem(g.inventory, r.makes.item);
+      if ('item' in r.makes) {
+        addItem(g.inventory, r.makes.item);
+        if (isTool(r.makes.item)) freshTool(g, r.makes.item);
+      }
       else addStructure(g, r.makes.structure, r.makes.structure === 'fire' ? 240 : 0);
       train(g, 'crafting', 5);
       say(g, `You make a ${r.name.toLowerCase()}.`);

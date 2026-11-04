@@ -3,6 +3,7 @@ import { craftableActions } from '../game/actions';
 import { ITEMS, type ItemId } from '../game/items';
 import { SKILL_NAMES, skillLevel, type SkillId } from '../game/skills';
 import type { GameState } from '../game/state';
+import { isTool, usesLeft } from '../game/wear';
 
 function setHtml(el: HTMLElement, html: string) {
   if (el.dataset.last === html) return;
@@ -13,7 +14,10 @@ function setHtml(el: HTMLElement, html: string) {
 export function updatePack(el: HTMLElement, state: GameState) {
   const rows = (Object.keys(ITEMS) as ItemId[])
     .filter((id) => (state.inventory[id] ?? 0) > 0)
-    .map((id) => `<div class="row">${ITEMS[id].icon} ${ITEMS[id].name}<b>${state.inventory[id]}</b></div>`);
+    .map((id) => {
+      const left = isTool(id) ? ` <small>(${usesLeft(state, id)} uses left)</small>` : '';
+      return `<div class="row">${ITEMS[id].icon} ${ITEMS[id].name}${left}<b>${state.inventory[id]}</b></div>`;
+    });
   setHtml(el, rows.join('') || '<div class="row dim">Empty</div>');
 }
 
