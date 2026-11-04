@@ -57,9 +57,10 @@ function stone(seed: number): THREE.Group {
   return g;
 }
 
-export function buildProps(world: World, props: Prop[]): { group: THREE.Group; update: () => void } {
+export function buildProps(world: World, props: Prop[]): { group: THREE.Group; update: () => void; find: (id: number) => THREE.Object3D | undefined } {
   const group = new THREE.Group();
   const views: PropView[] = [];
+  const holders = new Map<number, THREE.Object3D>();
   for (const prop of props) {
     const parts = prop.kind === 'tree' ? tree(prop.id) : prop.kind === 'bush' ? bush() : { full: stone(prop.id), empty: null };
     const holder = new THREE.Group();
@@ -68,6 +69,7 @@ export function buildProps(world: World, props: Prop[]): { group: THREE.Group; u
     holder.add(parts.full);
     if (parts.empty) holder.add(parts.empty);
     group.add(holder);
+    holders.set(prop.id, holder);
     views.push({ prop, full: parts.full, empty: parts.empty, shown: true });
   }
   const update = () => {
@@ -81,5 +83,5 @@ export function buildProps(world: World, props: Prop[]): { group: THREE.Group; u
     }
   };
   for (const v of views) if (v.empty) v.empty.visible = false;
-  return { group, update };
+  return { group, update, find: (id) => holders.get(id) };
 }

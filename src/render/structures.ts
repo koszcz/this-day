@@ -58,7 +58,7 @@ function shelterModel(): THREE.Group {
 
 export function buildStructures(world: World, parent: THREE.Group) {
   const views = new Map<number, View>();
-  return (list: Structure[], elapsed: number) => {
+  const update = (list: Structure[], elapsed: number) => {
     for (const s of list) {
       let v = views.get(s.id);
       if (!v) {
@@ -78,4 +78,5 @@ export function buildStructures(world: World, parent: THREE.Group) {
       }
     }
   };
+  return { update, find: (id: number): THREE.Object3D | undefined => views.get(id)?.root };
 }
