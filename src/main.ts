@@ -181,7 +181,7 @@ function frame() {
   view.lastX = state.player.x;
   view.lastY = state.player.y;
   p.position.set(state.player.x, view.y, state.player.y);
-  view.player.update(moving, state.sleeping, elapsed);
+  view.player.update(moving, state.sleeping, elapsed, state.busy?.id);
   view.props.update();
   view.structures.update(state.structures, elapsed);
   view.animals.update(state.animals, elapsed);

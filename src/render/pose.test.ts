@@ -59,6 +59,18 @@ describe('computePose', () => {
   });
 });
 
+describe('computePose with an action', () => {
+  test('the action pose replaces walking and idling', () => {
+    const action = { ...restPose(), rootY: 0.5 };
+    expect(computePose({ moving: true, sleeping: false, elapsed: 1, action })).toEqual(action);
+    expect(computePose({ moving: false, sleeping: false, elapsed: 1, action })).toEqual(action);
+  });
+  test('sleeping still wins over an action', () => {
+    const action = { ...restPose(), rootY: 0.5 };
+    expect(computePose({ moving: false, sleeping: true, elapsed: 1, action }).rootTilt).toBeCloseTo(Math.PI / 2, 10);
+  });
+});
+
 describe('blendPose', () => {
   test('t = 0 gives the first pose and t = 1 the second', () => {
     const a = walkPose(0.1);

@@ -28,6 +28,8 @@ export interface PoseInput {
   sleeping: boolean;
   /** Seconds of game-view time. */
   elapsed: number;
+  /** The pose of the busy action, if any. It replaces walking and idling. */
+  action?: Pose | null;
 }
 
 const STRIDE_RATE = 9;
@@ -74,6 +76,7 @@ export function sleepPose(elapsed: number): Pose {
 
 export function computePose(input: PoseInput): Pose {
   if (input.sleeping) return sleepPose(input.elapsed);
+  if (input.action) return input.action;
   return input.moving ? walkPose(input.elapsed) : idlePose(input.elapsed);
 }
 

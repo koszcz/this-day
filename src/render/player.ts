@@ -2,7 +2,8 @@
 // `joints` and `applyPose` are the API that action animations and held tools build on.
 import * as THREE from 'three';
 import { mat } from './palette';
-import { computePose, JOINTS, type JointName, type Pose } from './pose';
+import { actionKind, actionPose } from './action-pose';
+import { blendPose, computePose, JOINTS, type JointName, type Pose } from './pose';
 
 const SKIN = '#e8b98f';
 const SHIRT = '#3d6fb0';
@@ -76,7 +77,21 @@ export function buildPlayer() {
     }
   };
 
-  const update = (moving: boolean, sleeping: boolean, elapsed: number) => applyPose(computePose({ moving, sleeping, elapsed }));
+  // The action pose fades in and out, so the arms do not snap between poses.
+  let weight = 0;
+  let lastElapsed = 0;
+  let lastKind: ReturnType<typeof actionKind> = null;
+  const FADE_PER_SECOND = 6;
+  const update = (moving: boolean, sleeping: boolean, elapsed: number, busyId?: string | null) => {
+    const dt = Math.max(0, Math.min(0.25, elapsed - lastElapsed));
+    lastElapsed = elapsed;
+    const kind = moving || sleeping ? null : actionKind(busyId);
+    if (kind) lastKind = kind;
+    weight = Math.max(0, Math.min(1, weight + (kind ? 1 : -1) * dt * FADE_PER_SECOND));
+    const base = computePose({ moving, sleeping, elapsed });
+    if (weight <= 0 || !lastKind) return applyPose(base);
+    applyPose(blendPose(base, actionPose(lastKind, elapsed), weight));
+  };
   update(false, false, 0);
   return { root, joints, applyPose, update };
 }

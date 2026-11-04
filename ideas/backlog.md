@@ -9,7 +9,6 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-- **Action animations**: each action has its own animation, driven by the current busy action: chopping, swinging a spear to fish, bending to pick berries, crouching to drink, tending a fire to cook, and eating. *Fun 2 · Effort M · Needs: Jointed survivor*
 - **Held tools**: the axe and spear appear in the survivor's hand when used or carried, and the survivor lies flat with arms and legs out to sleep. *Fun 1 · Effort S · Needs: Jointed survivor*
 
 ## Inbox
@@ -32,6 +31,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Action animations**: each action has its own animation, driven by the current busy action: chopping, swinging a spear to fish, bending to pick berries, crouching to drink, tending a fire to cook, and eating. *Fun 2 · Effort M* — 2026-11-04
 - **Hunt with a spear**: speared animals drop meat, which is a new food that must be cooked at a fire. *Fun 2 · Effort S* — 2026-11-04
 - **Jointed survivor**: the survivor gets a head, torso, two arms and two legs, built from low-poly shapes in code. The legs and arms swing while walking, and the figure breathes slightly when idle. *Fun 2 · Effort M* — 2026-11-04
 - **Roaming animals**: low-poly deer and hares wander the island and flee when you come near. *Fun 2 · Effort M* — 2026-11-04
