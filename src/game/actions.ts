@@ -2,6 +2,7 @@
 import { hypot } from '../math/exact';
 import { waterNear } from '../world/query';
 import type { Prop, PropKind } from '../world/types';
+import { huntActions } from './hunting';
 import { hasLightingKit, tryLight } from './fire';
 import { ITEMS, addItem, count, removeItem, type ItemId } from './items';
 import { roll } from './random';
@@ -205,6 +206,18 @@ function fireActions(state: GameState): Action[] {
       },
     });
   }
+  if (litFireNear(state, 1.8) && count(state.inventory, 'rawMeat') > 0) {
+    const allRotten = rottenCount(state, 'rawMeat') === count(state.inventory, 'rawMeat');
+    out.push({
+      id: 'cookMeat', label: 'Cook meat', icon: '🍗', minutes: 10, energy: 0,
+      blocked: allRotten ? 'meat has rotted' : undefined,
+      run: (g) => {
+        if (takeUnit(g, 'rawMeat', 'oldestFresh') === null) return;
+        addItem(g.inventory, 'cookedMeat');
+        say(g, 'The meat sizzles and smells good.');
+      },
+    });
+  }
   if (litFireNear(state, 1.8)) {
     out.push({
       id: 'boil', label: 'Boil and drink', icon: '♨️', minutes: 12, energy: 0,
@@ -287,7 +300,7 @@ const sleepAction: Action = {
 
 // Actions tied to where you stand and what you carry.
 export function availableActions(state: GameState): Action[] {
-  const acts = [...contextActions(state), ...fireActions(state), ...eatActions(state)];
+  const acts = [...contextActions(state), ...huntActions(state), ...fireActions(state), ...eatActions(state)];
   if (canBandage(state)) acts.push(bandageAction);
   if (state.stats.energy < 92) acts.push(sleepAction);
   return acts;

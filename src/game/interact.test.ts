@@ -41,6 +41,7 @@ test('a fire offers to feed it, and cooking says why it is blocked', () => {
   expect(menuFor(g, target).map((e) => [e.id, e.label, e.blocked])).toEqual([
     ['light', 'Light fire', 'needs tinder and kindling'],
     ['cook', 'Cook fish', 'the fire is out'],
+    ['cookMeat', 'Cook meat', 'the fire is out'],
     ['boil', 'Boil and drink', 'the fire is out'],
   ]);
   give(g, 'tinder');
@@ -48,7 +49,7 @@ test('a fire offers to feed it, and cooking says why it is blocked', () => {
   expect(menuFor(g, target)[0].blocked).toBeUndefined();
   fire.fuel = 100;
   give(g, 'wood');
-  expect(menuFor(g, target).map((e) => [e.id, e.blocked])).toEqual([['fuel', undefined], ['cook', 'needs raw fish'], ['boil', undefined]]);
+  expect(menuFor(g, target).map((e) => [e.id, e.blocked])).toEqual([['fuel', undefined], ['cook', 'needs raw fish'], ['cookMeat', 'needs raw meat'], ['boil', undefined]]);
   give(g, 'rawFish');
   expect(menuFor(g, target)[1].blocked).toBeUndefined();
 });

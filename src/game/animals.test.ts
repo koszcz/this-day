@@ -97,10 +97,10 @@ test('the mouse over an animal picks it', () => {
   expect(pickObject(g, a.x + 0.1, a.y)).toEqual({ kind: 'animal', id: a.id });
 });
 
-test('clicking an animal offers no actions yet', () => {
+test('clicking an animal offers to hunt it', () => {
   const g = freshGame();
   animal(g, 'deer', 3, 0);
-  expect(menuFor(g, { kind: 'animal', id: 0 })).toEqual([]);
+  expect(menuFor(g, { kind: 'animal', id: 0 }).map((e) => e.id)).toEqual(['hunt:0']);
 });
 
 test('an old save without animals gets a herd', () => {

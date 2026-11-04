@@ -3,6 +3,7 @@ import { hypot } from '../math/exact';
 import { waterNear } from '../world/query';
 import { availableActions, craftableActions } from './actions';
 import type { HoverTarget } from './hover';
+import { HUNT_RANGE, huntActions, huntId } from './hunting';
 import { count } from './items';
 import type { GameState } from './state';
 import { isTool } from './wear';
@@ -57,7 +58,17 @@ function fireMenu(state: GameState, id: number): MenuEntry[] {
   const blocked = fire.fuel <= 0 ? 'the fire is out' : 'needs raw fish';
   const cook = here.find((a) => a.id === 'cook') ?? { id: 'cook', label: 'Cook fish', icon: '🍖', minutes: 0, blocked };
   const boil = here.find((a) => a.id === 'boil') ?? { id: 'boil', label: 'Boil and drink', icon: '♨️', minutes: 0, blocked: 'the fire is out' };
-  return [(here.find((a) => a.id === 'fuel') ?? here.find((a) => a.id === 'light'))!, cook, boil];
+  const meatBlocked = fire.fuel <= 0 ? 'the fire is out' : 'needs raw meat';
+  const meat = here.find((a) => a.id === 'cookMeat') ?? { id: 'cookMeat', label: 'Cook meat', icon: '🍗', minutes: 0, blocked: meatBlocked };
+  return [(here.find((a) => a.id === 'fuel') ?? here.find((a) => a.id === 'light'))!, cook, meat, boil];
+}
+
+// Hunting needs a spear. Range is not checked here: choosing Hunt walks you into range first.
+function animalMenu(state: GameState, id: number): MenuEntry[] {
+  const animal = state.animals.find((a) => a.id === id);
+  if (!animal) return [];
+  const armed = huntActions({ ...state, player: { x: animal.x, y: animal.y } }).length > 0;
+  return [{ id: huntId(id), label: `Hunt ${animal.kind}`, icon: '🏹', minutes: 0, blocked: armed ? undefined : 'needs spear' }];
 }
 
 function playerMenu(state: GameState): MenuEntry[] {
@@ -77,8 +88,7 @@ export function menuFor(state: GameState, target: HoverTarget): MenuEntry[] {
     case 'water': return waterMenu(state, target.x, target.y);
     case 'structure': return fireMenu(state, target.id);
     case 'player': return playerMenu(state);
-    // Animals have no actions yet, so a click on one is just a walk.
-    case 'animal': return [];
+    case 'animal': return animalMenu(state, target.id);
   }
 }
 
@@ -89,8 +99,11 @@ export function errandStep(state: GameState, errand: Errand): ErrandStep {
   switch (target.kind) {
     case 'player':
       return { kind: 'arrive' };
-    case 'animal':
-      return { kind: 'gone' };
+    case 'animal': {
+      const a = state.animals.find((q) => q.id === target.id);
+      if (!a) return { kind: 'gone' };
+      return hypot(a.x - px, a.y - py) <= HUNT_RANGE ? { kind: 'arrive' } : { kind: 'walk', x: a.x, y: a.y };
+    }
     case 'prop': {
       const p = state.props.find((q) => q.id === target.id);
       if (!p || p.amount <= 0) return { kind: 'gone' };

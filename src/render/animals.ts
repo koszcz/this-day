@@ -61,6 +61,13 @@ export function buildAnimals(world: World, parent: THREE.Group, animals: Animal[
     views.set(a.id, { root, body, lastX: a.x, lastY: a.y, heading: a.id * 2.1 });
   }
   const update = (list: Animal[], elapsed: number) => {
+    // A hunted animal leaves the list. Take its model out of the scene.
+    for (const [id, v] of views) {
+      if (!list.some((a) => a.id === id)) {
+        parent.remove(v.root);
+        views.delete(id);
+      }
+    }
     for (const a of list) {
       const v = views.get(a.id);
       if (!v) continue;
