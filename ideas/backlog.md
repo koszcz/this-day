@@ -9,8 +9,9 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-
-Empty.
+- **Carry weight**: the pack has a weight limit, and a heavy load slows your walk and drains energy faster. *Fun 2 · Effort S*
+- **Fire-making**: a campfire needs tinder and kindling, and lighting it can fail. Rain puts out a fire with no lean-to beside it. *Fun 2 · Effort M · Needs: Rain and wet*
+- **Plant fibre**: bushes give plant fibre, and a new Cordage recipe makes it into rope. *Fun 1 · Effort S*
 
 ## Inbox
 
@@ -27,10 +28,7 @@ Empty.
 ## Later
 
 Triaged and ready to build, but not next.
-- **Carry weight**: the pack has a weight limit, and a heavy load slows your walk and drains energy faster. *Fun 2 · Effort S*
 - **Food spoils**: raw fish and berries rot after 6 game hours in your pack, and cooked fish lasts 24. Eating rotten food makes you sick. *Fun 2 · Effort M*
-- **Fire-making**: a campfire needs tinder and kindling, and lighting it can fail. Rain puts out a fire with no lean-to beside it. *Fun 2 · Effort M · Needs: Rain and wet*
-- **Plant fibre**: bushes give plant fibre, and a new Cordage recipe makes it into rope. *Fun 1 · Effort S*
 - **Wounds**: slips on rock and spear fishing can cause bleeding that drains health, or a sprain that slows your walk. Rest or a plant-fibre bandage treats them. *Fun 2 · Effort M · Needs: Plant fibre*
 - **Infection**: a wound left untreated for 3 game hours turns into infection and sickness, and a clean bandage clears it. *Fun 2 · Effort S · Needs: Wounds*
 - **Crafting steps**: the axe and spear need a stone head, a handle and cordage, made one step at a time. *Fun 2 · Effort M · Needs: Plant fibre*
