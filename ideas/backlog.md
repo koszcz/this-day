@@ -9,7 +9,8 @@ Nothing right now.
 ## Next
 
 At most 3 ideas, in the order we build them.
-- **Jointed survivor**: the survivor gets a head, torso, two arms and two legs, built from low-poly shapes in code. The legs and arms swing while walking, and the figure breathes slightly when idle. *Fun 2 · Effort M*
+
+Empty.
 
 ## Inbox
 
@@ -34,6 +35,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Jointed survivor**: the survivor gets a head, torso, two arms and two legs, built from low-poly shapes in code. The legs and arms swing while walking, and the figure breathes slightly when idle. *Fun 2 · Effort M* — 2026-11-04
 - **Roaming animals**: low-poly deer and hares wander the island and flee when you come near. *Fun 2 · Effort M* — 2026-11-04
 - **Infection**: a wound left untreated for 3 game hours turns into infection and sickness, and a clean bandage clears it. *Fun 2 · Effort S* — 2026-11-04
 - **Crafting steps**: the axe and spear need a stone head, a handle and rope, made one step at a time. *Fun 2 · Effort M* — 2026-11-04
