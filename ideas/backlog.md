@@ -4,13 +4,12 @@ How to add and triage ideas: see [README.md](README.md).
 
 ## Building now
 
-Nothing right now.
+- **Fire in rain**: lighting a fire in rain is refused with a message before any tinder or kindling is spent. *Fun 2 · Effort S · Branch: worktree-agent-a5f4c200f5aedc984*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Fire in rain**: lighting a fire in rain is refused with a message before any tinder or kindling is spent. *Fun 2 · Effort S*
 - **Explain disabled MAKE cards**: a disabled MAKE card says what is missing. *Fun 2 · Effort S*
 
 ## Needs thought
