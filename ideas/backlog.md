@@ -11,7 +11,8 @@ How to add and triage ideas: see [README.md](README.md).
 
 At most 3 ideas, in the order we build them.
 
-Empty.
+- **Text layer**: every on-screen string, such as hints, menus, panels and survivor messages, comes from one English text table, so the game can switch language. The game looks and plays the same. *Fun 1 · Effort M*
+- **Polish language**: a Polish text table, including correct plural forms, and a PL/EN toggle in the HUD. The choice is saved. The first visit uses the browser language. *Fun 2 · Effort M · Needs: Text layer*
 
 ## Needs thought
 
