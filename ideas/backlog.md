@@ -5,7 +5,6 @@ How to add and triage ideas: see [README.md](README.md).
 ## Building now
 
 - **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S · Branch: worktree-agent-ad43d75eddc802881*
-- **Atmosphere**: a soft sky gradient, light fog at the island edge, and a few drifting leaves and dust motes. *Fun 2 · Effort S · Branch: worktree-agent-a6041559276b5fcc3*
 
 ## Next
 
@@ -30,6 +29,7 @@ Triaged and ready to build, but not next.
 
 Newest first, with the date it was merged.
 
+- **Atmosphere**: a soft sky gradient, light fog at the island edge, and a few drifting leaves and dust motes. *Fun 2 · Effort S* — 2026-11-05
 - **Animated water**: the sea and ponds shimmer and move, with foam along the shore. No imported textures. *Fun 2 · Effort S* — 2026-11-05
 - **Stone head takes campfire stones**: making a stone head warns, and still goes ahead, when it would leave fewer than the 2 stones a campfire needs and no fire stands yet. *Fun 1 · Effort S* — 2026-11-04
 - **Fix the clipped action menu**: the action menu stays inside the screen and is never cut off at the bottom. *Fun 1 · Effort S* — 2026-11-04

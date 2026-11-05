@@ -10,6 +10,7 @@ import { pickObject, pickWater, sameTarget, type HoverTarget } from './game/hove
 import { createHighlight } from './render/highlight';
 import { groundPoint } from './input/pointer';
 import { buildDaylight } from './render/daylight';
+import { buildAtmosphere } from './render/atmosphere';
 import { buildRain } from './render/rain';
 import { buildAnimals } from './render/animals';
 import { buildPlayer } from './render/player';
@@ -34,6 +35,7 @@ const $ = (id: string) => document.getElementById(id)!;
 const stage = createStage(canvas);
 const updateSky = buildDaylight(stage.scene);
 const updateRain = buildRain(stage.scene);
+const updateAtmosphere = buildAtmosphere(stage.scene);
 // How grey the sky is, 0 to 1. It eases toward the weather so rain fades in.
 let gloom = 0;
 const updateBars =initStats($('stats'));
@@ -184,7 +186,8 @@ function frame() {
   updateHover();
   stage.follow(p.position, dt);
   gloom += ((state.weather.raining ? 1 : 0) - gloom) * Math.min(1, dt * 0.8);
-  updateSky(state.time, stage.focus, gloom);
+  const sky = updateSky(state.time, stage.focus, gloom);
+  updateAtmosphere(sky, state.world.size, stage.focus, elapsed, gloom);
   updateRain(gloom, stage.focus, elapsed);
   stage.render();
 

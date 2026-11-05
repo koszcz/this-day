@@ -22,7 +22,8 @@ export function buildDaylight(scene: THREE.Scene) {
   cam.far = 120;
   sun.shadow.bias = -0.0006;
   scene.add(hemi, sun, sun.target);
-  scene.background = new THREE.Color();
+  const sky = new THREE.Color();
+  scene.background = sky;
 
   // `gloom` is 0 under a clear sky and 1 in full rain: the light dims and the sky goes grey.
   return (time: number, focus: THREE.Vector3, gloom = 0) => {
@@ -36,8 +37,9 @@ export function buildDaylight(scene: THREE.Scene) {
     sun.intensity = (0.28 + 1.0 * d) * (1 - 0.55 * gloom);
     hemi.intensity = (0.35 + 0.65 * d) * (1 - 0.3 * gloom);
     const dusk = 1 - Math.abs(d - 0.3) / 0.3;
-    const sky = (scene.background as THREE.Color).copy(NIGHT_SKY).lerp(DAY_SKY, d);
+    sky.copy(NIGHT_SKY).lerp(DAY_SKY, d);
     if (d > 0 && d < 0.6) sky.lerp(DUSK_SKY, Math.max(0, dusk) * 0.6);
     sky.lerp(STORM.copy(RAIN_SKY).multiplyScalar(0.15 + 0.85 * d), gloom * 0.85);
+    return sky;
   };
 }
