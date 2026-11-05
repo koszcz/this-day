@@ -16,7 +16,7 @@ At most 3 ideas, in the order we build them.
 
 Triaged, but with open questions. Run `/refine` on one to settle them.
 
-Empty.
+- **Base with storage**: the player builds a base where a lean-to, a campfire and a storage crate stand together, and keeps spare items in the crate so the pack is lighter. *Fun 2 · Effort M · Open: does food rot in storage, stay fresh, or stay out of it? Is the base just a crate beside the lean-to and fire, or a bigger thing with a marked site? Can tools go in the crate? How much can the crate hold?*
 
 ## Later
 
