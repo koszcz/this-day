@@ -2,6 +2,7 @@
 import { cos, sin } from '../math/exact';
 import { blocked, blockerAt } from './movement';
 import { say, type GameState } from './state';
+import { nounName, t } from '../text/text';
 
 const RING_STEP = 0.1;
 const MAX_RING = 3;
@@ -14,7 +15,6 @@ export function unstick(state: GameState): boolean {
   if (!isWedged(state)) return false;
   const { x, y } = state.player;
   const kind = blockerAt(state, x, y);
-  const what = kind === 'stone' ? 'rock' : kind;
   for (let r = RING_STEP; r <= MAX_RING; r += RING_STEP) {
     for (let i = 0; i < ANGLES; i++) {
       const a = (i / ANGLES) * 2 * Math.PI;
@@ -23,7 +23,7 @@ export function unstick(state: GameState): boolean {
       if (blocked(state, nx, ny)) continue;
       state.player.x = nx;
       state.player.y = ny;
-      say(state, `You are wedged against the ${what}. You step free.`);
+      say(state, t('unstick.freed', { what: nounName(kind) }));
       return true;
     }
   }

@@ -2,6 +2,7 @@
 import { roll } from './random';
 import { say, type GameState } from './state';
 import { FIRE_WARM_RADIUS, isSheltered, litFireNear } from './structures';
+import { t } from '../text/text';
 
 export interface Weather {
   raining: boolean;
@@ -37,7 +38,7 @@ export function stepWeather(state: GameState) {
   w.raining = !w.raining;
   const span = w.raining ? 90 + 150 * roll(state) : 240 + 480 * roll(state);
   w.changeAt = state.time + span;
-  say(state, w.raining ? 'Dark clouds open. Rain begins to fall.' : 'The rain stops.');
+  say(state, t(w.raining ? 'rain.start' : 'rain.stop'));
 }
 
 export function tickWet(state: GameState, minutes: number) {
@@ -49,6 +50,6 @@ export function tickWet(state: GameState, minutes: number) {
     if (litFireNear(state, FIRE_WARM_RADIUS)) dry = Math.max(dry, DRY_RATE_FIRE);
     state.wet = clamp(state.wet - dry * minutes);
   }
-  if (before < 50 && state.wet >= 50) say(state, 'You are soaked through. The chill bites.');
-  if (before > 0 && state.wet === 0) say(state, 'You are dry again.');
+  if (before < 50 && state.wet >= 50) say(state, t('wet.soaked'));
+  if (before > 0 && state.wet === 0) say(state, t('wet.dry'));
 }

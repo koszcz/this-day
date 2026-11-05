@@ -8,6 +8,7 @@ import { say, type GameState } from './state';
 import { advance } from './step';
 import { unstick } from './unstick';
 import { GAME_MINUTES_PER_SECOND, SLEEP_SPEEDUP } from './time';
+import { t } from '../text/text';
 
 type Point = { x: number; y: number };
 
@@ -52,7 +53,7 @@ export function tick(state: GameState, driver: Driver, seconds: number) {
     else {
       if (step.kind === 'arrive') {
         const refused = isRefused(state, driver.errand.action);
-        if (!startAction(state, driver.errand.action) && !refused) say(state, 'You cannot do that right now.');
+        if (!startAction(state, driver.errand.action) && !refused) say(state, t('action.cannot'));
       }
       driver.errand = null;
       driver.target = null;

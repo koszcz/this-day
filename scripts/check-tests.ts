@@ -28,6 +28,12 @@ const RULES: Rule[] = [
     why: 'reads chance or the clock. Use roll(state) from src/game/random.ts and game time, so tests give the same result every run.',
   },
   {
+    files: ['src/game/**/*.ts'],
+    skip: (file) => file.endsWith('.test.ts'),
+    bad: /\bsay\(\s*\w+\s*,\s*['"`]/,
+    why: 'says a text written in the code. Put it in src/text/en.ts and use t(key), so the game can switch language.',
+  },
+  {
     files: ['src/world/**/*.ts', 'src/game/**/*.ts'],
     skip: (file) => file.endsWith('.test.ts'),
     bad: /\bMath\.(sin|cos|tan|asin|acos|atan2?|sinh|cosh|tanh|exp|expm1|log|log1p|log2|log10|pow|cbrt|hypot)\b|[^/]\*\*/,

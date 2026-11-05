@@ -1,6 +1,7 @@
 // Food freshness: every unit of perishable food remembers when you got it, and rots after a while.
 import { ITEMS, count, removeItem, type ItemId } from './items';
 import { say, type GameState } from './state';
+import { itemName, lower, t } from '../text/text';
 
 const PERISHABLE = (Object.keys(ITEMS) as ItemId[]).filter((id) => ITEMS[id].spoilsAfter !== undefined);
 
@@ -65,6 +66,6 @@ export function tickSpoilage(state: GameState, minutes: number) {
   syncFood(state);
   for (const id of PERISHABLE) {
     const turned = (state.born[id] ?? []).filter((b) => state.time >= rotAt(id, b) && state.time - minutes < rotAt(id, b)).length;
-    if (turned > 0) say(state, `${turned > 1 ? 'Some of your' : 'Your'} ${ITEMS[id].name.toLowerCase()} has rotted.`);
+    if (turned > 0) say(state, t(turned > 1 ? 'rot.some' : 'rot.one', { item: lower(itemName(id)) }));
   }
 }

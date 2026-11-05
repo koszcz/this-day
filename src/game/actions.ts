@@ -7,7 +7,7 @@ import { hasLightingKit, rainRefusal, tryLight } from './fire';
 import { ITEMS, addItem, count, removeItem, type ItemId } from './items';
 import { roll } from './random';
 import { RECIPES, type Recipe } from './recipes';
-import { gainXp, SKILL_NAMES, skillLevel, speedFactor, type SkillId } from './skills';
+import { gainXp, skillLevel, speedFactor, type SkillId } from './skills';
 import { say, type GameState } from './state';
 import { FIRE_MAX_FUEL, addStructure, litFireNear, nearest } from './structures';
 import { MINUTES_PER_DAY } from './time';
@@ -15,6 +15,7 @@ import { rottenCount, takeUnit } from './spoilage';
 import { canCarry } from './weight';
 import { bandageWound, canBandage, maybeWound } from './wounds';
 import { freshTool, isTool, wearTool } from './wear';
+import { itemName, lower, recipeName, skillName, t } from '../text/text';
 
 export interface Action {
   id: string;
@@ -55,51 +56,51 @@ function deplete(state: GameState, prop: Prop, regrowDays: number) {
 }
 
 function train(state: GameState, skill: SkillId, xp: number) {
-  if (gainXp(state.skills, skill, xp)) say(state, `${SKILL_NAMES[skill]} is now level ${skillLevel(state.skills[skill])}.`);
+  if (gainXp(state.skills, skill, xp)) say(state, t('skill.levelUp', { skill: skillName(skill), level: skillLevel(state.skills[skill]) }));
 }
 
 function gather(state: GameState, prop: Prop, item: ItemId, skill: SkillId, regrowDays: number, bonus: number) {
   const lucky = roll(state) < bonus + skillLevel(state.skills[skill]) * 0.05;
   if (!canCarry(state.inventory, item)) {
-    say(state, 'Your pack is too full.');
+    say(state, t('pack.tooFull'));
     return;
   }
   const extra = lucky && canCarry(state.inventory, item, 2) ? 1 : 0;
   addItem(state.inventory, item, 1 + extra);
   deplete(state, prop, regrowDays);
   train(state, skill, 3);
-  say(state, `You get ${1 + extra} ${ITEMS[item].name.toLowerCase()}.`);
+  say(state, t('gather.got', { n: 1 + extra, item: lower(itemName(item)) }));
 }
 
 // Loose material that does not use up the bush or tree.
 function gatherLoose(state: GameState, item: ItemId, text: string) {
   if (!canCarry(state.inventory, item)) {
-    say(state, 'Your pack is too full.');
+    say(state, t('pack.tooFull'));
     return;
   }
   addItem(state.inventory, item);
   say(state, text);
 }
 
-const packFull = (state: GameState, item: ItemId) => (canCarry(state.inventory, item) ? undefined : 'pack is full');
+const packFull = (state: GameState, item: ItemId) => (canCarry(state.inventory, item) ? undefined : t('blocked.packFull'));
 
 function contextActions(state: GameState): Action[] {
   const out: Action[] = [];
   const s = state.skills;
   if (waterNear(state.world, state.player.x, state.player.y)) {
     out.push({
-      id: 'drink', label: 'Drink', icon: '💧', minutes: 5, energy: 0,
+      id: 'drink', label: t('action.drink'), icon: '💧', minutes: 5, energy: 0,
       run: (g) => {
         g.stats.thirst = Math.min(100, g.stats.thirst + 35);
         if (roll(g) < DIRTY_WATER_SICK_CHANCE) {
           g.sick = 360;
-          say(g, 'The water tastes foul. Your stomach turns. You feel sick.');
-        } else say(g, 'The water is cold. It tastes of salt and mud.');
+          say(g, t('drink.foul'));
+        } else say(g, t('drink.fine'));
       },
     });
     if (count(state.inventory, 'spear') > 0) {
       out.push({
-        id: 'fish', label: 'Fish', icon: '🐟', minutes: Math.round(35 * speedFactor(s.fishing)), energy: 4,
+        id: 'fish', label: t('action.fish'), icon: '🐟', minutes: Math.round(35 * speedFactor(s.fishing)), energy: 4,
         blocked: packFull(state, 'rawFish'),
         run: (g) => {
           train(g, 'fishing', 3);
@@ -107,8 +108,8 @@ function contextActions(state: GameState): Action[] {
           maybeWound(g);
           if (roll(g) < 0.35 + skillLevel(g.skills.fishing) * 0.05 && canCarry(g.inventory, 'rawFish')) {
             addItem(g.inventory, 'rawFish');
-            say(g, 'You spear a fish.');
-          } else say(g, 'The fish slip away.');
+            say(g, t('fish.hit'));
+          } else say(g, t('fish.miss'));
         },
       });
     }
@@ -116,7 +117,7 @@ function contextActions(state: GameState): Action[] {
   const bush = nearProp(state, 'bush');
   if (bush) {
     out.push({
-      id: 'forage', label: 'Pick berries', icon: '🫐', minutes: Math.round(10 * speedFactor(s.foraging)), energy: 1,
+      id: 'forage', label: t('action.forage'), icon: '🫐', minutes: Math.round(10 * speedFactor(s.foraging)), energy: 1,
       blocked: packFull(state, 'berries'),
       run: (g) => nearProp(g, 'bush') && gather(g, nearProp(g, 'bush')!, 'berries', 'foraging', 1.5, 0.2),
     });
@@ -125,41 +126,41 @@ function contextActions(state: GameState): Action[] {
   if (tree) {
     const axe = count(state.inventory, 'axe') > 0;
     out.push({
-      id: 'chop', label: axe ? 'Chop tree' : 'Break branches', icon: '🪵', minutes: Math.round((axe ? 14 : 36) * speedFactor(s.labor)), energy: axe ? 4 : 6,
+      id: 'chop', label: t(axe ? 'action.chop' : 'action.breakBranches'), icon: '🪵', minutes: Math.round((axe ? 14 : 36) * speedFactor(s.labor)), energy: axe ? 4 : 6,
       blocked: packFull(state, 'wood'),
       run: (g) => {
-        const t = nearProp(g, 'tree');
-        if (!t) return;
-        gather(g, t, 'wood', 'labor', 4, axe ? 0.3 : 0);
+        const found = nearProp(g, 'tree');
+        if (!found) return;
+        gather(g, found, 'wood', 'labor', 4, axe ? 0.3 : 0);
         if (axe) wearTool(g, 'axe');
       },
     });
   }
   if (bush) {
     out.push({
-      id: 'tinder', label: 'Gather tinder', icon: '🌾', minutes: 6, energy: 1,
+      id: 'tinder', label: t('action.tinder'), icon: '🌾', minutes: 6, energy: 1,
       blocked: packFull(state, 'tinder'),
-      run: (g) => gatherLoose(g, 'tinder', 'You pull dry grass from under the bush.'),
+      run: (g) => gatherLoose(g, 'tinder', t('tinder.got')),
     });
   }
   if (bush) {
     out.push({
-      id: 'fibre', label: 'Strip fibre', icon: '🌿', minutes: 8, energy: 1,
+      id: 'fibre', label: t('action.fibre'), icon: '🌿', minutes: 8, energy: 1,
       blocked: packFull(state, 'fibre'),
-      run: (g) => gatherLoose(g, 'fibre', 'You strip tough fibre from the bush stems.'),
+      run: (g) => gatherLoose(g, 'fibre', t('fibre.got')),
     });
   }
   if (tree) {
     out.push({
-      id: 'kindling', label: 'Gather kindling', icon: '🥢', minutes: 8, energy: 1,
+      id: 'kindling', label: t('action.kindling'), icon: '🥢', minutes: 8, energy: 1,
       blocked: packFull(state, 'kindling'),
-      run: (g) => gatherLoose(g, 'kindling', 'You snap dry twigs from the tree.'),
+      run: (g) => gatherLoose(g, 'kindling', t('kindling.got')),
     });
   }
   const stone = nearProp(state, 'stone');
   if (stone) {
     out.push({
-      id: 'mine', label: 'Gather stone', icon: '🪨', minutes: Math.round(22 * speedFactor(s.labor)), energy: 4,
+      id: 'mine', label: t('action.mine'), icon: '🪨', minutes: Math.round(22 * speedFactor(s.labor)), energy: 4,
       blocked: packFull(state, 'stone'),
       run: (g) => {
         const s = nearProp(g, 'stone');
@@ -178,19 +179,19 @@ function fireActions(state: GameState): Action[] {
   if (fire) {
     if (fire.fuel > 0) {
       out.push({
-        id: 'fuel', label: 'Feed fire', icon: '🔥', minutes: 4, energy: 0,
-        blocked: count(state.inventory, 'wood') > 0 ? undefined : 'needs wood',
+        id: 'fuel', label: t('action.fuel'), icon: '🔥', minutes: 4, energy: 0,
+        blocked: count(state.inventory, 'wood') > 0 ? undefined : t('blocked.needsWood'),
         run: (g) => {
           const f = nearest(g, 'fire', 1.8);
           if (!f || !removeItem(g.inventory, 'wood')) return;
           f.fuel = Math.min(FIRE_MAX_FUEL, f.fuel + 120);
-          say(g, 'The fire crackles.');
+          say(g, t('fire.fed'));
         },
       });
     } else {
       out.push({
-        id: 'light', label: 'Light fire', icon: '🔥', minutes: 10, energy: 1,
-        blocked: hasLightingKit(state) ? undefined : 'needs tinder and kindling',
+        id: 'light', label: t('action.light'), icon: '🔥', minutes: 10, energy: 1,
+        blocked: hasLightingKit(state) ? undefined : t('blocked.needsLightingKit'),
         refuse: rainRefusal(state, fire),
         run: (g) => {
           const f = nearest(g, 'fire', 1.8);
@@ -202,33 +203,33 @@ function fireActions(state: GameState): Action[] {
   if (litFireNear(state, 1.8) && count(state.inventory, 'rawFish') > 0) {
     const allRotten = rottenCount(state, 'rawFish') === count(state.inventory, 'rawFish');
     out.push({
-      id: 'cook', label: 'Cook fish', icon: '🍖', minutes: 8, energy: 0,
-      blocked: allRotten ? 'fish has rotted' : undefined,
+      id: 'cook', label: t('action.cook'), icon: '🍖', minutes: 8, energy: 0,
+      blocked: allRotten ? t('blocked.fishRotted') : undefined,
       run: (g) => {
         if (takeUnit(g, 'rawFish', 'oldestFresh') === null) return;
         addItem(g.inventory, 'cookedFish');
-        say(g, 'The fish sizzles.');
+        say(g, t('cook.fish'));
       },
     });
   }
   if (litFireNear(state, 1.8) && count(state.inventory, 'rawMeat') > 0) {
     const allRotten = rottenCount(state, 'rawMeat') === count(state.inventory, 'rawMeat');
     out.push({
-      id: 'cookMeat', label: 'Cook meat', icon: '🍗', minutes: 10, energy: 0,
-      blocked: allRotten ? 'meat has rotted' : undefined,
+      id: 'cookMeat', label: t('action.cookMeat'), icon: '🍗', minutes: 10, energy: 0,
+      blocked: allRotten ? t('blocked.meatRotted') : undefined,
       run: (g) => {
         if (takeUnit(g, 'rawMeat', 'oldestFresh') === null) return;
         addItem(g.inventory, 'cookedMeat');
-        say(g, 'The meat sizzles and smells good.');
+        say(g, t('cook.meat'));
       },
     });
   }
   if (litFireNear(state, 1.8)) {
     out.push({
-      id: 'boil', label: 'Boil and drink', icon: '♨️', minutes: 12, energy: 0,
+      id: 'boil', label: t('action.boil'), icon: '♨️', minutes: 12, energy: 0,
       run: (g) => {
         g.stats.thirst = Math.min(100, g.stats.thirst + 35);
-        say(g, 'You boil water over the fire and drink it. It is safe.');
+        say(g, t('boil.done'));
       },
     });
   }
@@ -243,25 +244,25 @@ function eatActions(state: GameState): Action[] {
     const rotten = rottenCount(state, id);
     const allRotten = rotten === count(state.inventory, id);
     out.push({
-      id: `eat:${id}`, label: `Eat ${allRotten ? 'rotten ' : ''}${ITEMS[id].name.toLowerCase()}`, icon: ITEMS[id].icon, minutes: 2, energy: 0,
+      id: `eat:${id}`, label: t(allRotten ? 'action.eatRotten' : 'action.eat', { item: lower(itemName(id)) }), icon: ITEMS[id].icon, minutes: 2, energy: 0,
       run: (g) => {
         const wasRotten = takeUnit(g, id, 'freshest');
         if (wasRotten === null) return;
         g.stats.hunger = Math.min(100, g.stats.hunger + food.hunger);
         if (wasRotten) {
           g.sick = 360;
-          say(g, `The ${ITEMS[id].name.toLowerCase()} is rotten. Your stomach turns. You feel sick.`);
+          say(g, t('eat.rotten', { item: lower(itemName(id)) }));
         } else if (roll(g) < food.sickChance) {
           g.sick = 360;
-          say(g, 'Your stomach turns. You feel sick.');
-        } else say(g, `You eat the ${ITEMS[id].name.toLowerCase()}.`);
+          say(g, t('eat.sick'));
+        } else say(g, t('eat.ok', { item: lower(itemName(id)) }));
       },
     });
     if (rotten > 0) {
       out.push({
-        id: `discard:${id}`, label: `Throw away rotten ${ITEMS[id].name.toLowerCase()}`, icon: '🗑️', minutes: 1, energy: 0,
+        id: `discard:${id}`, label: t('action.discard', { item: lower(itemName(id)) }), icon: '🗑️', minutes: 1, energy: 0,
         run: (g) => {
-          if (takeUnit(g, id, 'rotten') !== null) say(g, `You throw away the rotten ${ITEMS[id].name.toLowerCase()}.`);
+          if (takeUnit(g, id, 'rotten') !== null) say(g, t('discard.done', { item: lower(itemName(id)) }));
         },
       });
     }
@@ -276,12 +277,12 @@ export function canCraft(state: GameState, r: Recipe): boolean {
 
 // Why a recipe cannot be made right now, in a few words. Undefined when you can make it.
 export function craftBlock(state: GameState, r: Recipe): string | undefined {
-  if ('item' in r.makes && isTool(r.makes.item) && count(state.inventory, r.makes.item) > 0) return 'you have one';
+  if ('item' in r.makes && isTool(r.makes.item) && count(state.inventory, r.makes.item) > 0) return t('craft.haveOne');
   const missing = Object.entries(r.cost)
     .map(([id, n]) => ({ id: id as ItemId, short: n - count(state.inventory, id as ItemId) }))
     .filter((m) => m.short > 0)
-    .map((m) => `${m.short} ${ITEMS[m.id].name.toLowerCase()}`);
-  return missing.length > 0 ? `needs ${missing.join(', ')}` : undefined;
+    .map((m) => `${m.short} ${lower(itemName(m.id))}`);
+  return missing.length > 0 ? t('craft.needs', { list: missing.join(', ') }) : undefined;
 }
 
 // A stone head eats stones that you still need for a campfire, while you have no fire yet.
@@ -292,13 +293,13 @@ export function stoneWarning(state: GameState, r: Recipe): string | undefined {
   if (state.structures.some((s) => s.kind === 'fire')) return undefined;
   const need = campfire.cost.stone ?? 0;
   const left = count(state.inventory, 'stone') - stone;
-  return left < need ? `This stone is for a campfire, which needs ${need} stone. You will have ${Math.max(0, left)} left.` : undefined;
+  return left < need ? t('craft.stoneWarning', { need, left: Math.max(0, left) }) : undefined;
 }
 
 function craftAction(r: Recipe, state: GameState): Action {
   return {
     warn: stoneWarning(state, r),
-    id: `craft:${r.id}`, label: `Make ${r.name.toLowerCase()}`, icon: r.icon, minutes: r.minutes, energy: 3,
+    id: `craft:${r.id}`, label: t('action.craft', { recipe: lower(recipeName(r.id)) }), icon: r.icon, minutes: r.minutes, energy: 3,
     run: (g) => {
       for (const [id, n] of Object.entries(r.cost)) removeItem(g.inventory, id as ItemId, n);
       if ('item' in r.makes) {
@@ -307,29 +308,29 @@ function craftAction(r: Recipe, state: GameState): Action {
       }
       else addStructure(g, r.makes.structure);
       train(g, 'crafting', 5);
-      say(g, `You make a ${r.name.toLowerCase()}.`);
+      say(g, t('craft.done', { recipe: lower(recipeName(r.id)) }));
     },
   };
 }
 
-const bandageAction: Action = {
-  id: 'bandage', label: 'Bandage wound', icon: '🩹', minutes: 3, energy: 0,
+const bandageAction = (): Action => ({
+  id: 'bandage', label: t('action.bandage'), icon: '🩹', minutes: 3, energy: 0,
   run: bandageWound,
-};
+});
 
-const sleepAction: Action = {
-  id: 'sleep', label: 'Sleep', icon: '😴', minutes: 0, energy: 0,
+const sleepAction = (): Action => ({
+  id: 'sleep', label: t('action.sleep'), icon: '😴', minutes: 0, energy: 0,
   run: (g) => {
     g.sleeping = true;
-    say(g, 'You lie down and close your eyes.');
+    say(g, t('sleep.start'));
   },
-};
+});
 
 // Actions tied to where you stand and what you carry.
 export function availableActions(state: GameState): Action[] {
   const acts = [...contextActions(state), ...huntActions(state), ...fireActions(state), ...eatActions(state)];
-  if (canBandage(state)) acts.push(bandageAction);
-  if (state.stats.energy < 92) acts.push(sleepAction);
+  if (canBandage(state)) acts.push(bandageAction());
+  if (state.stats.energy < 92) acts.push(sleepAction());
   return acts;
 }
 

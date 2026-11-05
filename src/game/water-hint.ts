@@ -2,6 +2,7 @@
 import { hypot } from '../math/exact';
 import { isWater, waterNear } from '../world/query';
 import { say, type GameState } from './state';
+import { t } from '../text/text';
 
 // Thirst levels that trigger a hint when thirst falls through them.
 export const THIRST_HINTS = [30, 10];
@@ -35,11 +36,11 @@ export function screenDirection(dx: number, dy: number): string {
   const up = -dx - dy;
   const ar = Math.abs(right);
   const au = Math.abs(up);
-  const vertical = up > 0 ? 'up' : 'down';
-  const horizontal = right > 0 ? 'right' : 'left';
+  const vertical = t(up > 0 ? 'dir.up' : 'dir.down');
+  const horizontal = t(right > 0 ? 'dir.right' : 'dir.left');
   if (au < ar * EDGE) return horizontal;
   if (ar < au * EDGE) return vertical;
-  return `${vertical} and to the ${horizontal}`;
+  return t('dir.diagonal', { vertical, horizontal });
 }
 
 export const crossedThirstHint = (before: number, after: number): boolean =>
@@ -48,11 +49,11 @@ export const crossedThirstHint = (before: number, after: number): boolean =>
 // Says where the nearest water is.
 export function pointToWater(state: GameState) {
   if (waterNear(state.world, state.player.x, state.player.y)) {
-    say(state, 'You are thirsty. Water is right beside you.');
+    say(state, t('thirst.here'));
     return;
   }
   const w = nearestWater(state);
   if (!w) return;
   const steps = Math.round(hypot(w.dx, w.dy));
-  say(state, `You are thirsty. Water lies ${screenDirection(w.dx, w.dy)}, about ${steps} steps away.`);
+  say(state, t('thirst.far', { direction: screenDirection(w.dx, w.dy), steps }));
 }

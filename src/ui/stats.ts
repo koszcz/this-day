@@ -2,6 +2,7 @@
 import { clockText, dayNumber, daylight } from '../game/time';
 import type { GameState } from '../game/state';
 import { isSheltered } from '../game/structures';
+import { t } from '../text/text';
 
 const BARS = [
   { key: 'health', icon: '❤️', color: '#d9534f' },
@@ -25,12 +26,12 @@ export function initStats(root: HTMLElement) {
 
 export function updateClock(el: HTMLElement, state: GameState) {
   const sky = daylight(state.time) > 0.1 ? '☀️' : '🌙';
-  const sick = state.sick > 0 ? ' · 🤢 sick' : '';
-  const wound = state.wound?.infected ? ' · 🦠 infected' : state.wound ? (state.wound.kind === 'bleeding' ? ' · 🩸 bleeding' : ' · 🦶 sprained') : '';
-  const shelter = isSheltered(state) ? ' · ⛺ sheltered' : '';
-  const rain = state.weather.raining ? ' · 🌧 raining' : '';
-  const wet = state.wet >= 20 ? (state.wet >= 60 ? ' · 💦 soaked' : ' · 💧 damp') : '';
-  el.textContent = `${sky} Day ${dayNumber(state.time)} · ${clockText(state.time)}${rain}${wet}${shelter}${sick}${wound}`;
+  const sick = state.sick > 0 ? ` · 🤢 ${t('clock.sick')}` : '';
+  const wound = state.wound?.infected ? ` · 🦠 ${t('clock.infected')}` : state.wound ? (state.wound.kind === 'bleeding' ? ` · 🩸 ${t('clock.bleeding')}` : ` · 🦶 ${t('clock.sprained')}`) : '';
+  const shelter = isSheltered(state) ? ` · ⛺ ${t('clock.sheltered')}` : '';
+  const rain = state.weather.raining ? ` · 🌧 ${t('clock.raining')}` : '';
+  const wet = state.wet >= 20 ? (state.wet >= 60 ? ` · 💦 ${t('clock.soaked')}` : ` · 💧 ${t('clock.damp')}`) : '';
+  el.textContent = `${sky} ${t('clock.day', { n: dayNumber(state.time) })} · ${clockText(state.time)}${rain}${wet}${shelter}${sick}${wound}`;
 }
 
 export function updateLog(el: HTMLElement, state: GameState) {

@@ -1,6 +1,7 @@
 // Tool wear: the axe and spear break after a fixed number of uses.
 import { ITEMS, count, removeItem, type ItemId } from './items';
 import { say, type GameState } from './state';
+import { itemName, lower, t } from '../text/text';
 
 export type ToolId = Extract<ItemId, 'axe' | 'spear'>;
 
@@ -25,7 +26,7 @@ export function wearTool(state: GameState, id: ToolId) {
   state.toolUses[id] = left;
   if (left <= 0) {
     removeItem(state.inventory, id);
-    say(state, `Your ${ITEMS[id].name.toLowerCase()} breaks.`);
+    say(state, t('wear.broke', { item: lower(itemName(id)) }));
   }
 }
 

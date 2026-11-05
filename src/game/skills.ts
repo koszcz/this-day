@@ -1,12 +1,7 @@
 // Skills grow when you use them. Each level makes the matching work a little better.
 export type SkillId = 'foraging' | 'labor' | 'fishing' | 'crafting';
 
-export const SKILL_NAMES: Record<SkillId, string> = {
-  foraging: 'Foraging',
-  labor: 'Labor',
-  fishing: 'Fishing',
-  crafting: 'Crafting',
-};
+export const SKILL_IDS: SkillId[] = ['foraging', 'labor', 'fishing', 'crafting'];
 
 export type Skills = Record<SkillId, number>;
 

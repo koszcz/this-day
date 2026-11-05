@@ -2,11 +2,12 @@
 import type { MenuEntry } from '../game/interact';
 
 import { MENU_MARGIN, placeMenu } from './menu-place';
+import { t } from '../text/text';
 
 // Shows the entries as buttons next to the click, kept inside the window.
 export function showMenu(el: HTMLElement, entries: MenuEntry[], x: number, y: number) {
   el.innerHTML = entries
-    .map((e, i) => `<button data-pick="${i}" ${e.blocked ? 'disabled' : ''}>${e.icon} ${e.label}${e.blocked ? `<small>${e.blocked}</small>` : e.minutes ? `<small>${e.minutes}m</small>` : ''}</button>`)
+    .map((e, i) => `<button data-pick="${i}" ${e.blocked ? 'disabled' : ''}>${e.icon} ${e.label}${e.blocked ? `<small>${e.blocked}</small>` : e.minutes ? `<small>${t('minutes', { n: e.minutes })}</small>` : ''}</button>`)
     .join('');
   // Reset the spot first, so the old position cannot squeeze the menu while we measure it.
   el.style.left = '0px';

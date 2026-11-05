@@ -8,14 +8,15 @@ import { burnFires } from './structures';
 import { syncFood, tickSpoilage } from './spoilage';
 import { drainFactor } from './weight';
 import { stepWeather, tickWet } from './weather';
+import { t } from '../text/text';
 
 const SUBSTEP = 5;
 
 function wakeReason(state: GameState): string | null {
   const s = state.stats;
-  if (s.energy >= 100) return 'You wake up rested.';
-  if (s.warmth < 15) return 'The cold wakes you up.';
-  if (s.thirst < 5 || s.hunger < 5) return 'Your body wakes you. You need water or food.';
+  if (s.energy >= 100) return t('wake.rested');
+  if (s.warmth < 15) return t('wake.cold');
+  if (s.thirst < 5 || s.hunger < 5) return t('wake.needs');
   return null;
 }
 

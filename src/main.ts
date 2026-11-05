@@ -22,7 +22,7 @@ import { buildStructures } from './render/structures';
 import { buildTerrain } from './render/terrain';
 import { buildWater } from './render/water';
 import { surfaceHeight } from './world/query';
-import { LAYOUT } from './ui/layout';
+import { layout } from './ui/layout';
 import { menuFor, type MenuEntry } from './game/interact';
 import { hideMenu, showMenu } from './ui/menu';
 import { showDeath, showIntro } from './ui/overlay';
@@ -31,7 +31,7 @@ import { initStats, updateClock, updateLog } from './ui/stats';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const hud = document.getElementById('hud')!;
-hud.innerHTML = LAYOUT;
+hud.innerHTML = layout();
 const $ = (id: string) => document.getElementById(id)!;
 
 const stage = createStage(canvas);

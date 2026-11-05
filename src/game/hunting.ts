@@ -2,12 +2,13 @@
 import { hypot } from '../math/exact';
 import type { Action } from './actions';
 import type { Animal, AnimalKind } from './animals';
-import { ITEMS, addItem, count } from './items';
+import { addItem, count } from './items';
 import { roll } from './random';
 import { say, type GameState } from './state';
 import { canCarry } from './weight';
 import { maybeWound } from './wounds';
 import { wearTool } from './wear';
+import { itemName, lower, nounName, t } from '../text/text';
 
 // How far you can throw, in tiles.
 export const HUNT_RANGE = 6;
@@ -29,13 +30,13 @@ export const hitChance = (distance: number) => (distance <= CLOSE_RANGE ? CLOSE_
 function throwSpear(state: GameState, id: number) {
   const a = state.animals.find((q) => q.id === id);
   if (!a || distanceTo(state, a) > HUNT_RANGE) {
-    say(state, 'The animal is out of reach.');
+    say(state, t('hunt.outOfReach'));
     return;
   }
   const hit = roll(state) < hitChance(distanceTo(state, a));
   wearTool(state, 'spear');
   if (!hit) {
-    say(state, `You throw the spear and miss the ${a.kind}.`);
+    say(state, t('hunt.miss', { animal: nounName(a.kind) }));
     return;
   }
   state.animals = state.animals.filter((q) => q.id !== id);
@@ -44,9 +45,9 @@ function throwSpear(state: GameState, id: number) {
     addItem(state.inventory, 'rawMeat');
     got++;
   }
-  const meat = ITEMS.rawMeat.name.toLowerCase();
-  if (got === 0) say(state, `You kill the ${a.kind}, but your pack is too full to take any ${meat}.`);
-  else say(state, `You kill the ${a.kind} and take ${got} ${meat}${got < MEAT[a.kind] ? ', all you can carry' : ''}.`);
+  const params = { animal: nounName(a.kind), item: lower(itemName('rawMeat')), n: got };
+  if (got === 0) say(state, t('hunt.killFull', params));
+  else say(state, t(got < MEAT[a.kind] ? 'hunt.killPartial' : 'hunt.kill', params));
   if (a.kind === 'deer') maybeWound(state, DEER_WOUND_CHANCE);
 }
 
@@ -56,7 +57,7 @@ export function huntActions(state: GameState): Action[] {
   return state.animals
     .filter((a) => distanceTo(state, a) <= HUNT_RANGE)
     .map((a) => ({
-      id: huntId(a.id), label: `Hunt ${a.kind}`, icon: '🏹', minutes: 0, energy: 0,
+      id: huntId(a.id), label: t('action.hunt', { animal: nounName(a.kind) }), icon: '🏹', minutes: 0, energy: 0,
       run: (g: GameState) => throwSpear(g, a.id),
     }));
 }
