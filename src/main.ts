@@ -17,6 +17,7 @@ import { buildProps } from './render/props';
 import { createStage } from './render/scene';
 import { buildStructures } from './render/structures';
 import { buildTerrain } from './render/terrain';
+import { buildWater } from './render/water';
 import { surfaceHeight } from './world/query';
 import { LAYOUT } from './ui/layout';
 import { menuFor, type MenuEntry } from './game/interact';
@@ -53,6 +54,8 @@ let view: ReturnType<typeof mountWorld>;
 function mountWorld(g: GameState) {
   const root = new THREE.Group();
   root.add(buildTerrain(g.world));
+  const water = buildWater(g.world);
+  root.add(water.mesh);
   const props = buildProps(g.world, g.props);
   root.add(props.group);
   const structures = buildStructures(g.world, root);
@@ -63,7 +66,7 @@ function mountWorld(g: GameState) {
   player.root.position.set(g.player.x, surfaceHeight(g.world, g.player.x, g.player.y), g.player.y);
   stage.focus.copy(player.root.position);
   const highlight = createHighlight(root, { prop: props.find, structure: structures.find, animal: animals.find, player: player.root });
-  return { root, props, structures, animals, player, highlight, lastX: g.player.x, lastY: g.player.y, y: player.root.position.y };
+  return { root, water, props, structures, animals, player, highlight, lastX: g.player.x, lastY: g.player.y, y: player.root.position.y };
 }
 
 function restart(seed?: number) {
@@ -175,6 +178,7 @@ function frame() {
     spear: count(state.inventory, 'spear') > 0,
   });
   view.props.update();
+  view.water.update(elapsed);
   view.structures.update(state.structures, elapsed);
   view.animals.update(state.animals, elapsed);
   updateHover();
