@@ -281,7 +281,7 @@ export function craftBlock(state: GameState, r: Recipe): string | undefined {
   const missing = Object.entries(r.cost)
     .map(([id, n]) => ({ id: id as ItemId, short: n - count(state.inventory, id as ItemId) }))
     .filter((m) => m.short > 0)
-    .map((m) => `${m.short} ${lower(itemName(m.id))}`);
+    .map((m) => t('craft.missing', { n: m.short, item: lower(itemName(m.id)) }));
   return missing.length > 0 ? t('craft.needs', { list: missing.join(', ') }) : undefined;
 }
 

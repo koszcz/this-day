@@ -2,16 +2,34 @@
 import type { ItemId } from '../game/items';
 import type { SkillId } from '../game/skills';
 import { EN, type Table, type TextKey } from './en';
+import { PL } from './pl';
 
 export type Params = Record<string, string | number>;
 
 // Every language the game has, by code. A new language is one more table here.
-export const LANGUAGES: Record<string, Table> = { en: EN };
+export const LANGUAGES: Record<string, Table> = { en: EN, pl: PL };
 
 let current: Table = EN;
+let currentCode = 'en';
 
 export function setLanguage(code: string) {
-  if (LANGUAGES[code]) current = LANGUAGES[code];
+  if (LANGUAGES[code]) {
+    current = LANGUAGES[code];
+    currentCode = code;
+  }
+}
+
+export const getLanguage = (): string => currentCode;
+
+// Which plural form a number takes. English: one or other. Polish: one, few (2-4, 22-24, ...) or other.
+export function pluralForm(code: string, n: number): 'one' | 'few' | 'other' {
+  if (n === 1) return 'one';
+  if (code === 'pl') {
+    const last = n % 10;
+    const lastTwo = n % 100;
+    if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) return 'few';
+  }
+  return 'other';
 }
 
 export function translate(table: Table, key: TextKey, params: Params = {}): string {
@@ -19,6 +37,13 @@ export function translate(table: Table, key: TextKey, params: Params = {}): stri
 }
 
 export const t = (key: TextKey, params?: Params): string => translate(current, key, params);
+
+// A text that depends on a number. The table holds 'key.one', 'key.other' and, in Polish, 'key.few'.
+export function tn(key: string, n: number, params?: Params): string {
+  const form = pluralForm(currentCode, n);
+  const found = `${key}.${form}` in current ? form : 'other';
+  return translate(current, `${key}.${found}` as TextKey, params);
+}
 
 export const itemName = (id: ItemId): string => t(`item.${id}`);
 export const skillName = (id: SkillId): string => t(`skill.${id}`);

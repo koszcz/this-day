@@ -2,7 +2,7 @@
 import { hypot } from '../math/exact';
 import { isWater, waterNear } from '../world/query';
 import { say, type GameState } from './state';
-import { t } from '../text/text';
+import { t, tn } from '../text/text';
 
 // Thirst levels that trigger a hint when thirst falls through them.
 export const THIRST_HINTS = [30, 10];
@@ -55,5 +55,5 @@ export function pointToWater(state: GameState) {
   const w = nearestWater(state);
   if (!w) return;
   const steps = Math.round(hypot(w.dx, w.dy));
-  say(state, t('thirst.far', { direction: screenDirection(w.dx, w.dy), steps }));
+  say(state, tn('thirst.far', steps, { direction: screenDirection(w.dx, w.dy), steps }));
 }

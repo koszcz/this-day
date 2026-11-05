@@ -3,6 +3,7 @@ import { generateWorld } from '../world/generate';
 import type { Prop, World } from '../world/types';
 import { spawnAnimals, type Animal } from './animals';
 import type { Inventory, ItemId } from './items';
+import { t } from '../text/text';
 import { newSkills, type Skills } from './skills';
 import { START_MINUTE } from './time';
 import type { Wound } from './wounds';
@@ -85,7 +86,7 @@ export function newGame(seed: number): GameState {
     wet: 0,
     sick: 0,
     wound: null,
-    log: ['You wake up on cold ground. You do not know where you are.'],
+    log: [t('intro.wake')],
     dead: null,
   };
   state.animals = spawnAnimals(state);

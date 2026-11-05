@@ -22,7 +22,9 @@ import { buildStructures } from './render/structures';
 import { buildTerrain } from './render/terrain';
 import { buildWater } from './render/water';
 import { surfaceHeight } from './world/query';
-import { layout } from './ui/layout';
+import { layout, relabel } from './ui/layout';
+import { chooseLanguage, otherLanguage, savedLanguage, saveLanguage } from './text/language';
+import { getLanguage, setLanguage } from './text/text';
 import { menuFor, type MenuEntry } from './game/interact';
 import { hideMenu, showMenu } from './ui/menu';
 import { showDeath, showIntro } from './ui/overlay';
@@ -31,6 +33,8 @@ import { initStats, updateClock, updateLog } from './ui/stats';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const hud = document.getElementById('hud')!;
+setLanguage(chooseLanguage(savedLanguage(), navigator.languages));
+document.documentElement.lang = getLanguage();
 hud.innerHTML = layout();
 const $ = (id: string) => document.getElementById(id)!;
 
@@ -95,8 +99,21 @@ function closeMenu() {
 view = mountWorld(state);
 showIntro($('overlay'), () => (started = true));
 
+// Switches between English and Polish, saves the choice, and rewrites the fixed texts and any open screen.
+function switchLanguage() {
+  const code = otherLanguage(getLanguage());
+  setLanguage(code);
+  saveLanguage(code);
+  document.documentElement.lang = code;
+  relabel(hud);
+  closeMenu();
+  if (state.dead) showDeath($('overlay'), state, restart);
+  else if (!started) showIntro($('overlay'), () => (started = true));
+}
+
 hud.addEventListener('click', (e) => {
   const el = e.target as HTMLElement;
+  if (el.closest('#language')) return switchLanguage();
   const btn = el.closest<HTMLElement>('[data-action]');
   if (btn) startAction(state, btn.dataset.action!);
   const pick = el.closest<HTMLElement>('[data-pick]');

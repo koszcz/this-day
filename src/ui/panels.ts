@@ -6,7 +6,7 @@ import type { GameState } from '../game/state';
 import { freshCount, hoursUntilRot, rottenCount } from '../game/spoilage';
 import { isTool, usesLeft } from '../game/wear';
 import { MAX_LOAD, carryLoad, encumbrance } from '../game/weight';
-import { itemName, recipeBlurb, recipeName, skillName, t } from '../text/text';
+import { itemName, recipeBlurb, recipeName, skillName, t, tn } from '../text/text';
 
 function setHtml(el: HTMLElement, html: string) {
   if (el.dataset.last === html) return;
@@ -29,7 +29,7 @@ export function updatePack(el: HTMLElement, state: GameState) {
   const rows = (Object.keys(ITEMS) as ItemId[])
     .filter((id) => (state.inventory[id] ?? 0) > 0)
     .map((id) => {
-      const left = isTool(id) ? ` <small>${t('pack.usesLeft', { n: usesLeft(state, id) })}</small>` : freshness(state, id);
+      const left = isTool(id) ? ` <small>${tn('pack.usesLeft', usesLeft(state, id), { n: usesLeft(state, id) })}</small>` : freshness(state, id);
       return `<div class="row">${ITEMS[id].icon} ${itemName(id)}${left}<b>${state.inventory[id]}</b></div>`;
     });
   const load = carryLoad(state.inventory);

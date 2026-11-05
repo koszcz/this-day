@@ -1,7 +1,7 @@
 // Full-screen messages: the opening and the end.
 import { dayNumber } from '../game/time';
 import type { GameState } from '../game/state';
-import { t } from '../text/text';
+import { t, tn } from '../text/text';
 
 export function showIntro(el: HTMLElement, onBegin: () => void) {
   el.style.display = 'flex';
@@ -19,7 +19,7 @@ export function showDeath(el: HTMLElement, state: GameState, onRestart: () => vo
   const days = dayNumber(state.time);
   el.style.display = 'flex';
   el.innerHTML = `<div class="card"><h1>${t('death.title', { cause: state.dead ?? '' })}</h1>
-    <p>${t(days === 1 ? 'death.lastedOne' : 'death.lastedMany', { n: days })}</p>
+    <p>${tn('death.lasted', days, { n: days })}</p>
     <button id="again">${t('death.again')}</button></div>`;
   el.querySelector('#again')!.addEventListener('click', onRestart);
 }

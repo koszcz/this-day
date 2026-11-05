@@ -44,7 +44,7 @@ export const EN = {
   'blocked.meatRotted': 'meat has rotted', 'blocked.fireOut': 'the fire is out',
   'blocked.needsRawFish': 'needs raw fish', 'blocked.needsRawMeat': 'needs raw meat',
   'blocked.needsSpear': 'needs spear', 'blocked.notTired': 'not tired',
-  'craft.haveOne': 'you have one', 'craft.needs': 'needs {list}',
+  'craft.haveOne': 'you have one', 'craft.missing': '{n} {item}', 'craft.needs': 'needs {list}',
   'craft.stoneWarning': 'This stone is for a campfire, which needs {need} stone. You will have {left} left.',
 
   // Messages after an action.
@@ -100,7 +100,8 @@ export const EN = {
 
   // Thirst hints.
   'thirst.here': 'You are thirsty. Water is right beside you.',
-  'thirst.far': 'You are thirsty. Water lies {direction}, about {steps} steps away.',
+  'thirst.far.one': 'You are thirsty. Water lies {direction}, about {steps} step away.',
+  'thirst.far.other': 'You are thirsty. Water lies {direction}, about {steps} steps away.',
   'dir.left': 'left', 'dir.right': 'right', 'dir.up': 'up', 'dir.down': 'down',
   'dir.diagonal': '{vertical} and to the {horizontal}',
 
@@ -110,7 +111,7 @@ export const EN = {
   'death.bleeding': 'bled to death', 'death.other': 'died',
   'death.log': 'You {cause}.',
   'death.title': 'You {cause}',
-  'death.lastedOne': 'You lasted {n} day.', 'death.lastedMany': 'You lasted {n} days.',
+  'death.lasted.one': 'You lasted {n} day.', 'death.lasted.other': 'You lasted {n} days.',
   'death.again': 'Wake up again',
 
   // Opening screen.
@@ -120,10 +121,11 @@ export const EN = {
   'intro.begin': 'Open your eyes',
 
   // HUD.
+  'hud.language': 'PL', 'hud.languageLabel': 'Switch to Polish',
   'hud.pack': 'Pack', 'hud.make': 'Make', 'hud.skills': 'Skills',
   'hud.help': 'click the ground to walk · click an object for its actions · click the survivor to eat, sleep and make · wheel to zoom',
   'pack.empty': 'Empty', 'pack.load': 'Load', 'pack.loadFull': 'Load (full)', 'pack.loadHeavy': 'Load (heavy)',
-  'pack.usesLeft': '({n} uses left)',
+  'pack.usesLeft.one': '({n} use left)', 'pack.usesLeft.other': '({n} uses left)',
   'fresh.rotten': 'rotten', 'fresh.someRotten': '{n} rotten', 'fresh.rotsIn': 'rots in {n}h',
   'busy.sleeping': 'Sleeping…',
   'minutes': '{n}m',
@@ -133,4 +135,5 @@ export const EN = {
 } as const;
 
 export type TextKey = keyof typeof EN;
-export type Table = Record<TextKey, string>;
+// A table has every key. A language with more plural forms adds extra keys such as 'x.few'.
+export type Table = Record<TextKey, string> & Record<string, string>;
