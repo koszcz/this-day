@@ -5,12 +5,13 @@ How to add and triage ideas: see [README.md](README.md).
 ## Building now
 
 - **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S · Branch: worktree-agent-ad43d75eddc802881*
+- **Atmosphere**: a soft sky gradient, light fog at the island edge, and a few drifting leaves and dust motes. *Fun 2 · Effort S · Branch: worktree-agent-a6041559276b5fcc3*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Atmosphere**: a soft sky gradient, light fog at the island edge, and a few drifting leaves and dust motes. *Fun 2 · Effort S*
+Empty.
 
 ## Needs thought
 
