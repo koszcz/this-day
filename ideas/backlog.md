@@ -5,12 +5,13 @@ How to add and triage ideas: see [README.md](README.md).
 ## Building now
 
 - **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S · Branch: worktree-agent-ad43d75eddc802881*
+- **Stronger lighting**: a warm glow from lit fires at night, softer sun shadows, and subtle colour grading by time of day. *Fun 2 · Effort M · Branch: worktree-agent-adf8f48cae630df66*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Stronger lighting**: a warm glow from lit fires at night, softer sun shadows, and subtle colour grading by time of day. *Fun 2 · Effort M*
+Empty.
 
 ## Needs thought
 
