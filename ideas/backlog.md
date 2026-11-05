@@ -5,12 +5,12 @@ How to add and triage ideas: see [README.md](README.md).
 ## Building now
 
 - **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S · Branch: worktree-agent-ad43d75eddc802881*
+- **Animated water**: the sea and ponds shimmer and move, with foam along the shore. No imported textures. *Fun 2 · Effort S · Branch: worktree-agent-a1f5e5deeada9b7ff*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Animated water**: the sea and ponds shimmer and move, with foam along the shore. No imported textures. *Fun 2 · Effort S*
 - **Atmosphere**: a soft sky gradient, light fog at the island edge, and a few drifting leaves and dust motes. *Fun 2 · Effort S*
 
 ## Needs thought
