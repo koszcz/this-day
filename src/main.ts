@@ -9,6 +9,7 @@ import { newGame, say, type GameState } from './game/state';
 import { pickObject, pickWater, sameTarget, type HoverTarget } from './game/hover';
 import { createHighlight } from './render/highlight';
 import { groundPoint } from './input/pointer';
+import { daylight } from './game/time';
 import { buildDaylight } from './render/daylight';
 import { buildAtmosphere } from './render/atmosphere';
 import { buildRain } from './render/rain';
@@ -183,7 +184,7 @@ function frame() {
   });
   view.props.update();
   view.water.update(elapsed);
-  view.structures.update(state.structures, elapsed);
+  view.structures.update(state.structures, elapsed, daylight(state.time));
   view.animals.update(state.animals, elapsed);
   updateHover();
   stage.follow(p.position, dt);

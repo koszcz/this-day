@@ -5,7 +5,6 @@ How to add and triage ideas: see [README.md](README.md).
 ## Building now
 
 - **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S · Branch: worktree-agent-ad43d75eddc802881*
-- **Stronger lighting**: a warm glow from lit fires at night, softer sun shadows, and subtle colour grading by time of day. *Fun 2 · Effort M · Branch: worktree-agent-adf8f48cae630df66*
 
 ## Next
 
@@ -29,6 +28,7 @@ Empty.
 
 Newest first, with the date it was merged.
 
+- **Stronger lighting**: a warm glow from lit fires at night, softer sun shadows, and subtle colour grading by time of day. *Fun 2 · Effort M* — 2026-11-05
 - **Richer scenery**: trees, bushes, rocks and grass tufts vary in size, shape and tint, so no two look alike. *Fun 2 · Effort M* — 2026-11-05
 - **Atmosphere**: a soft sky gradient, light fog at the island edge, and a few drifting leaves and dust motes. *Fun 2 · Effort S* — 2026-11-05
 - **Animated water**: the sea and ponds shimmer and move, with foam along the shore. No imported textures. *Fun 2 · Effort S* — 2026-11-05

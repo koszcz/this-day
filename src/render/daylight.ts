@@ -1,6 +1,7 @@
 // Sun, moon and sky: light and colors follow the time of day, and the sun's shadow follows the player.
 import * as THREE from 'three';
 import { daylight, hourOf } from '../game/time';
+import { fillShare, grade } from './light-math';
 
 const NIGHT_SKY = new THREE.Color('#0a1028');
 const DAY_SKY = new THREE.Color('#a9d6ea');
@@ -9,6 +10,9 @@ const MOON = new THREE.Color('#7a8ccc');
 const SUN = new THREE.Color('#fff1d6');
 const RAIN_SKY = new THREE.Color('#68747f');
 const STORM = new THREE.Color();
+const COOL_FILL = new THREE.Color('#8fa4ff');
+const WARM_FILL = new THREE.Color('#ffc58a');
+const WHITE = new THREE.Color('#ffffff');
 
 export function buildDaylight(scene: THREE.Scene) {
   const hemi = new THREE.HemisphereLight('#ffffff', '#5a6b4a', 0.6);
@@ -34,8 +38,16 @@ export function buildDaylight(scene: THREE.Scene) {
     sun.position.copy(focus).addScaledVector(dir, 60);
     sun.target.position.copy(focus);
     sun.color.copy(MOON).lerp(SUN, d);
-    sun.intensity = (0.28 + 1.0 * d) * (1 - 0.55 * gloom);
-    hemi.intensity = (0.35 + 0.65 * d) * (1 - 0.3 * gloom);
+    // The same total light as before, but more of it from the sky, so sun shadows stay soft.
+    const sunLight = (0.28 + 1.0 * d) * (1 - 0.55 * gloom);
+    const fillLight = (0.35 + 0.65 * d) * (1 - 0.3 * gloom);
+    const fill = fillShare(d);
+    const total = sunLight + fillLight;
+    sun.intensity = total * (1 - fill);
+    hemi.intensity = total * fill;
+    const g = grade(d);
+    hemi.color.copy(WHITE).lerp(COOL_FILL, g.cool * 0.6).lerp(WARM_FILL, g.warm);
+    sun.color.lerp(WARM_FILL, g.warm * 0.5);
     const dusk = 1 - Math.abs(d - 0.3) / 0.3;
     sky.copy(NIGHT_SKY).lerp(DAY_SKY, d);
     if (d > 0 && d < 0.6) sky.lerp(DUSK_SKY, Math.max(0, dusk) * 0.6);

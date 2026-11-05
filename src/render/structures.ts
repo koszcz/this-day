@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import type { Structure } from '../game/state';
 import { surfaceHeight } from '../world/query';
 import type { World } from '../world/types';
+import { fireGlow, fireHalo } from './light-math';
 import { mat } from './palette';
 
 interface View {
@@ -10,9 +11,25 @@ interface View {
   root: THREE.Group;
   flame: THREE.Mesh | null;
   light: THREE.PointLight | null;
+  halo: THREE.Mesh | null;
 }
 
-function fireModel(): { root: THREE.Group; flame: THREE.Mesh; light: THREE.PointLight } {
+// A soft round gradient drawn in code, so the halo fades out with no hard edge.
+let halo: THREE.CanvasTexture | null = null;
+function haloTexture(): THREE.CanvasTexture {
+  if (halo) return halo;
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const g = c.getContext('2d')!;
+  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 64);
+  return (halo = new THREE.CanvasTexture(c));
+}
+
+function fireModel(): { root: THREE.Group; flame: THREE.Mesh; light: THREE.PointLight; halo: THREE.Mesh } {
   const root = new THREE.Group();
   for (let i = 0; i < 3; i++) {
     const log = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.6, 5), mat('#5a3c20'));
@@ -34,7 +51,15 @@ function fireModel(): { root: THREE.Group; flame: THREE.Mesh; light: THREE.Point
   const light = new THREE.PointLight('#ff9a3c', 14, 9, 1.6);
   light.position.y = 0.8;
   root.add(light);
-  return { root, flame, light };
+  // A warm pool of light on the ground, seen only in the dark.
+  const halo = new THREE.Mesh(
+    new THREE.CircleGeometry(2.6, 24),
+    new THREE.MeshBasicMaterial({ map: haloTexture(), color: '#ff8a2a', transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }),
+  );
+  halo.rotation.x = -Math.PI / 2;
+  halo.position.y = 0.06;
+  root.add(halo);
+  return { root, flame, light, halo };
 }
 
 function shelterModel(): THREE.Group {
@@ -58,11 +83,11 @@ function shelterModel(): THREE.Group {
 
 export function buildStructures(world: World, parent: THREE.Group) {
   const views = new Map<number, View>();
-  const update = (list: Structure[], elapsed: number) => {
+  const update = (list: Structure[], elapsed: number, d = 1) => {
     for (const s of list) {
       let v = views.get(s.id);
       if (!v) {
-        const model = s.kind === 'fire' ? fireModel() : { root: shelterModel(), flame: null, light: null };
+        const model = s.kind === 'fire' ? fireModel() : { root: shelterModel(), flame: null, light: null, halo: null };
         model.root.position.set(s.x, surfaceHeight(world, s.x, s.y), s.y);
         parent.add(model.root);
         v = { id: s.id, ...model };
@@ -74,7 +99,14 @@ export function buildStructures(world: World, parent: THREE.Group) {
         v.light.visible = lit;
         const flicker = 1 + Math.sin(elapsed * 14 + s.id) * 0.12 + Math.sin(elapsed * 23) * 0.08;
         v.flame.scale.set(flicker, flicker * 1.1, flicker);
-        v.light.intensity = 14 * flicker * Math.min(1, s.fuel / 30);
+        const glow = fireGlow(d);
+        const share = Math.min(1, s.fuel / 30);
+        v.light.intensity = 14 * glow.intensity * flicker * share;
+        v.light.distance = 9 * glow.reach;
+        if (v.halo) {
+          v.halo.visible = lit;
+          (v.halo.material as THREE.MeshBasicMaterial).opacity = fireHalo(d, share) * flicker;
+        }
       }
     }
   };
