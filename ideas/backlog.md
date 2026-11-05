@@ -5,12 +5,12 @@ How to add and triage ideas: see [README.md](README.md).
 ## Building now
 
 - **Show walking to a far target**: a marker shows on the target while the survivor walks a long way. *Fun 1 · Effort S · Branch: worktree-agent-ad43d75eddc802881*
+- **Polish language**: a Polish text table, including correct plural forms, and a PL/EN toggle in the HUD. The choice is saved. The first visit uses the browser language. *Fun 2 · Effort M · Branch: worktree-agent-a1bb3d0b8dd0355de*
 
 ## Next
 
 At most 3 ideas, in the order we build them.
 
-- **Polish language**: a Polish text table, including correct plural forms, and a PL/EN toggle in the HUD. The choice is saved. The first visit uses the browser language. *Fun 2 · Effort M · Needs: Text layer*
 - **Better survivor model**: rebuild the survivor's low-poly figure so it looks good: better proportions, a face, hands, boots, clothing detail and smoother shading. Look only, no gameplay change. The joints, poses, held tools and see-through outline keep working. *Fun 2 · Effort M*
 
 ## Needs thought
