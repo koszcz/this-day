@@ -10,13 +10,14 @@ How to add and triage ideas: see [README.md](README.md).
 
 At most 3 ideas, in the order we build them.
 
-Empty.
+- **Camp and storage crate**: you make a Camp marker (3 wood, 10 minutes) that draws a ring about 5 steps wide on the ground. A storage crate (6 wood, 1 rope) can only be built inside the ring. You store and take wood, stone and rope there, up to 120 load, so the pack stays light. Food and tools stay in the pack. The campfire and lean-to can still go anywhere. *Fun 2 · Effort M*
+- **Food pit**: you dig a food pit inside the camp (about 40 minutes, no items). Food stored there rots four times slower than in the pack. *Fun 2 · Effort M · Needs: Camp and storage crate*
 
 ## Needs thought
 
 Triaged, but with open questions. Run `/refine` on one to settle them.
 
-- **Base with storage**: the player builds a base where a lean-to, a campfire and a storage crate stand together, and keeps spare items in the crate so the pack is lighter. *Fun 2 · Effort M · Open: does food rot in storage, stay fresh, or stay out of it? Is the base just a crate beside the lean-to and fire, or a bigger thing with a marked site? Can tools go in the crate? How much can the crate hold?*
+Empty.
 
 ## Later
 
