@@ -1,29 +1,12 @@
 // The survivor: a low-poly figure with head, torso, two arms and two legs on named joints.
 // `joints` and `applyPose` are the API that action animations and held tools build on.
 import * as THREE from 'three';
-import { mat } from './palette';
 import { actionKind, actionPose } from './action-pose';
 import { heldTool, type Carried } from './held-tool';
 import { buildTool } from './tools';
+import { buildArm, buildHead, buildLeg, buildTorso } from './survivor-parts';
+import { ARM, BODY, HEAD, LEG, handY } from './survivor-look';
 import { blendPose, computePose, JOINTS, type JointName, type Pose } from './pose';
-
-const SKIN = '#e8b98f';
-const SHIRT = '#3d6fb0';
-const TROUSERS = '#5a4636';
-
-function limb(length: number, radius: number, color: string, endColor: string, endRadius: number) {
-  // The pivot sits at the top of the limb, so rotating it swings the limb from the shoulder or hip.
-  const pivot = new THREE.Group();
-  const seg = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius * 0.85, length, 5), mat(color));
-  seg.position.y = -length / 2;
-  const end = new THREE.Mesh(new THREE.IcosahedronGeometry(endRadius, 0), mat(endColor));
-  end.position.y = -length;
-  for (const m of [seg, end]) {
-    m.castShadow = true;
-    pivot.add(m);
-  }
-  return pivot;
-}
 
 // A pale copy of every part, drawn only where something stands in front of it.
 // So the survivor shows through trees, rocks and hills as a flat outline shape.
@@ -33,6 +16,10 @@ const SEE_THROUGH = new THREE.MeshBasicMaterial({
   opacity: 0.7,
   depthFunc: THREE.GreaterDepth,
   depthWrite: false,
+  // Skip pixels where the survivor itself is visible, so her own parts do not show through each other.
+  stencilWrite: true,
+  stencilRef: 1,
+  stencilFunc: THREE.NotEqualStencilFunc,
 });
 
 function addSeeThrough(root: THREE.Object3D) {
@@ -54,46 +41,43 @@ export function buildPlayer() {
   root.add(body);
 
   const hips = new THREE.Group();
-  hips.position.y = 0.55;
+  hips.position.y = BODY.hipsY;
   body.add(hips);
 
   const torso = new THREE.Group();
+  torso.add(...buildTorso());
   hips.add(torso);
-  const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.17, 0.5, 6), mat(SHIRT));
-  chest.position.y = 0.25;
-  chest.castShadow = true;
-  torso.add(chest);
 
   const head = new THREE.Group();
-  head.position.y = 0.58;
+  head.position.y = HEAD.y;
+  head.add(...buildHead());
   torso.add(head);
-  const skull = new THREE.Mesh(new THREE.IcosahedronGeometry(0.17, 0), mat(SKIN));
-  skull.position.y = 0.14;
-  const hair = new THREE.Mesh(new THREE.IcosahedronGeometry(0.18, 0), mat('#4a3322'));
-  hair.position.y = 0.2;
-  hair.scale.set(1, 0.7, 1);
-  for (const m of [skull, hair]) {
-    m.castShadow = true;
-    head.add(m);
-  }
 
-  const armL = limb(0.42, 0.055, SHIRT, SKIN, 0.065);
-  armL.position.set(-0.27, 0.45, 0);
-  const armR = limb(0.42, 0.055, SHIRT, SKIN, 0.065);
-  armR.position.set(0.27, 0.45, 0);
+  const arm = (side: number) => {
+    const pivot = new THREE.Group();
+    pivot.position.set(side * ARM.offsetX, ARM.shoulderY, 0);
+    pivot.add(...buildArm());
+    return pivot;
+  };
+  const armL = arm(-1);
+  const armR = arm(1);
   torso.add(armL, armR);
 
-  const legL = limb(0.55, 0.075, TROUSERS, '#3a2c20', 0.08);
-  legL.position.set(-0.1, 0, 0);
-  const legR = limb(0.55, 0.075, TROUSERS, '#3a2c20', 0.08);
-  legR.position.set(0.1, 0, 0);
+  const leg = (side: number) => {
+    const pivot = new THREE.Group();
+    pivot.position.set(side * LEG.offsetX, 0, 0);
+    pivot.add(...buildLeg());
+    return pivot;
+  };
+  const legL = leg(-1);
+  const legR = leg(1);
   hips.add(legL, legR);
 
   /** The pivot groups, by name. Hang tools on `armR`, or drive them directly. */
   // Tools sit in the right hand, at the end of the arm. Only one shows at a time.
   const tools = { axe: buildTool('axe'), spear: buildTool('spear') };
   for (const t of Object.values(tools)) {
-    t.position.y = -0.42;
+    t.position.y = handY();
     t.visible = false;
     armR.add(t);
   }
