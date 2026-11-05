@@ -15,6 +15,7 @@ import { buildRain } from './render/rain';
 import { buildAnimals } from './render/animals';
 import { buildPlayer } from './render/player';
 import { buildProps } from './render/props';
+import { buildTufts } from './render/tufts';
 import { createStage } from './render/scene';
 import { buildStructures } from './render/structures';
 import { buildTerrain } from './render/terrain';
@@ -60,6 +61,7 @@ function mountWorld(g: GameState) {
   root.add(water.mesh);
   const props = buildProps(g.world, g.props);
   root.add(props.group);
+  root.add(buildTufts(g.world, g.props));
   const structures = buildStructures(g.world, root);
   const animals = buildAnimals(g.world, root, g.animals);
   const player = buildPlayer();
